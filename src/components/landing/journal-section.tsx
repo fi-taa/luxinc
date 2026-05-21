@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { FillImage } from "./fill-image";
 import { journal } from "@/lib/landing-content";
 import { GoldButton } from "./gold-button";
 import { SectionHeading } from "./section-heading";
@@ -21,15 +21,12 @@ export function JournalSection() {
               href={article.href}
               className="group flex gap-5 border-b border-zulu-border py-6 transition-colors first:pt-0 hover:border-zulu-gold/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zulu-gold focus-visible:ring-offset-4 focus-visible:ring-offset-zulu-bg"
             >
-              <div className="relative h-[72px] w-[72px] shrink-0 overflow-hidden md:h-20 md:w-20">
-                <Image
-                  src={article.image}
-                  alt={article.imageAlt}
-                  fill
-                  className="object-cover"
-                  sizes="80px"
-                />
-              </div>
+              <FillImage
+                containerClassName="h-[72px] w-[72px] shrink-0 md:h-20 md:w-20"
+                src={article.image}
+                alt={article.imageAlt}
+                sizes="80px"
+              />
               <div className="flex min-w-0 flex-col justify-center">
                 <h3 className="font-serif text-base leading-snug text-zulu-gold transition-colors group-hover:text-zulu-text md:text-lg">
                   {article.title}
@@ -42,15 +39,12 @@ export function JournalSection() {
           ))}
         </div>
         <article className="flex flex-col">
-          <div className="relative aspect-[4/3] w-full overflow-hidden lg:aspect-[16/11]">
-            <Image
-              src={journal.featured.image}
-              alt={journal.featured.imageAlt}
-              fill
-              className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 55vw"
-            />
-          </div>
+          <FillImage
+            containerClassName="aspect-[4/3] w-full lg:aspect-[16/11]"
+            src={journal.featured.image}
+            alt={journal.featured.imageAlt}
+            sizes="(max-width: 1024px) 100vw, 55vw"
+          />
           <div className="flex flex-1 flex-col pt-8 lg:pt-10">
             <p className="font-sans text-[10px] font-medium uppercase tracking-[0.3em] text-zulu-gold">
               {journal.featured.label}

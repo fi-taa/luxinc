@@ -21,6 +21,7 @@ export function CrownCollectionSection() {
           <article
             key={card.title}
             className="group relative aspect-[3/4] overflow-hidden md:aspect-[4/5]"
+            style={{ position: "relative" }}
           >
             <Image
               src={card.image}

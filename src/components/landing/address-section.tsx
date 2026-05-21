@@ -16,6 +16,7 @@ export function AddressSection() {
           <article
             key={office.city}
             className="group relative aspect-[16/10] overflow-hidden md:aspect-[16/9]"
+            style={{ position: "relative" }}
           >
             <Image
               src={office.image}

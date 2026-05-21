@@ -48,7 +48,7 @@ export interface OfficeCard {
 export const site = {
   name: "LUXINC.",
   navCta: {
-    label: "Begin Your Journey",
+    label: "Login",
     href: "#contact",
   },
 };
@@ -59,7 +59,7 @@ export const navLinks: NavLink[] = [
   { label: "The Architects", href: "#architects" },
   { label: "Journal", href: "#journal" },
   { label: "Our Addresses", href: "#contact" },
-];
+]
 
 export const hero = {
   location: "Addis Ababa • Dubai",
@@ -82,11 +82,10 @@ export const commitment = {
 };
 
 export const destinations = {
-  titleLine1: "Signature",
-  titleLine2: "Destination",
-  subtitle: "EAST AFRICA & BEYOND",
+  titleImage: "/images/sd.png",
+  titleImageAlt: "Signature Destination — East Africa & Beyond",
   featured: {
-    image: "/images/destination-featured.png",
+    image: "/images/sd2.png",
     imageAlt: "Ethiopia landscape with palm trees and city skyline",
     captionTitle: "Ethiopia — Sacred Origins",
     captionBody:
@@ -97,21 +96,21 @@ export const destinations = {
       title: "Kenya — The Untamed Covenant",
       description:
         "Private Masai Mara conservancies, rhino tracking by foot, mid-air helicopter transfers.",
-      image: "/images/destination-kenya.png",
+      image: "/images/sd3.png",
       imageAlt: "Giraffes with Kilimanjaro in the background",
     },
     {
       title: "Rwanda & Tanzania",
       description:
         "Gorilla naming ceremonies, night descent into Ngorongoro Crater, private Mnemba Island.",
-      image: "/images/destination-rwanda.png",
+      image: "/images/sd4.png",
       imageAlt: "Tropical beach with turquoise water",
     },
     {
       title: "Global Extensions",
       description:
         "Maldives private atolls, Japanese ryokan buyouts, Tuscan villa & helicopter fleet.",
-      image: "/images/destination-global.png",
+      image: "/images/sd5.png",
       imageAlt: "World landmarks and private aviation",
     },
   ] satisfies DestinationCard[],

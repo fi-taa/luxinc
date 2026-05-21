@@ -5,7 +5,7 @@ interface GoldButtonProps {
   children: React.ReactNode;
   href?: string;
   type?: "button" | "submit";
-  variant?: "outline" | "solid" | "ghost";
+  variant?: "outline" | "solid" | "ghost" | "ghost-gradient";
   className?: string;
   onClick?: () => void;
 }
@@ -18,6 +18,9 @@ const solidStyles =
 
 const ghostStyles =
   "border border-zulu-gold/50 bg-zulu-gold/30 text-zulu-bg backdrop-blur-sm hover:bg-zulu-gold/45 hover:border-zulu-gold/70";
+
+const ghostGradientStyles =
+  "border-0 bg-linear-to-r from-zulu-gold/45 via-zulu-gold/20 to-transparent text-zulu-bg backdrop-blur-sm hover:from-zulu-gold/55 hover:via-zulu-gold/25";
 
 export function GoldButton({
   children,
@@ -33,7 +36,9 @@ export function GoldButton({
       ? solidStyles
       : variant === "ghost"
         ? ghostStyles
-        : outlineStyles
+        : variant === "ghost-gradient"
+          ? ghostGradientStyles
+          : outlineStyles
   );
 
   if (href) {

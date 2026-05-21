@@ -7,6 +7,7 @@ export function HeroSection() {
     <section
       id="hero"
       className="relative flex min-h-screen items-center justify-center"
+      style={{ position: "relative" }}
       aria-label="Hero"
     >
       <Image
@@ -23,11 +24,14 @@ export function HeroSection() {
         <p className="font-verietta text-[clamp(1.25rem,4vw,32px)] font-normal leading-none text-zulu-gold">
           {hero.location}
         </p>
-        <h1 className="mt-8 max-w-5xl font-verietta text-[clamp(2.25rem,9vw,99px)] font-normal leading-[1.23] tracking-normal text-zulu-text lg:leading-[122px]">
-          Time is the ultimate{" "}
-          <span className="text-zulu-gold">LUXURY.</span>
-          <br />
-          We architect its <span className="text-zulu-gold">MEMORY.</span>
+        <h1 className="mt-8 w-full max-w-5xl font-verietta font-normal tracking-normal text-zulu-text">
+          <span className="mx-auto block w-max max-w-full whitespace-nowrap text-[clamp(1rem,5.5vw,72px)] leading-[1.23] lg:leading-[88px]">
+            Time is the ultimate{" "}
+            <span className="text-zulu-gold">LUXURY.</span>
+          </span>
+          <span className="mx-auto mt-2 block w-max max-w-full whitespace-nowrap text-[clamp(1rem,5.5vw,72px)] leading-[1.23] lg:leading-[88px]">
+            We architect its <span className="text-zulu-gold">MEMORY.</span>
+          </span>
         </h1>
         <p className="mt-8 max-w-3xl font-diphylleia text-[clamp(1.125rem,2.5vw,24px)] font-normal leading-none text-zulu-text">
           {hero.subheadline}
@@ -42,7 +46,7 @@ export function HeroSection() {
           </GoldButton>
           <GoldButton
             href={hero.loginHref}
-            variant="ghost"
+            variant="ghost-gradient"
             className="h-12 min-w-[140px] px-10 text-sm"
           >
             {hero.loginCta}

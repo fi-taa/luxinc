@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import {
   Dancing_Script,
-  Diphylleia,
   Montserrat,
   Playfair_Display,
 } from "next/font/google";
@@ -28,12 +27,6 @@ const verietta = localFont({
   ],
   variable: "--font-verietta-src",
   display: "swap",
-});
-
-const diphylleia = Diphylleia({
-  variable: "--font-diphylleia",
-  subsets: ["latin"],
-  weight: "400",
 });
 
 const montserrat = Montserrat({
@@ -68,7 +61,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${montserrat.variable} ${playfair.variable} ${dancingScript.variable} ${verietta.variable} ${diphylleia.variable} h-full antialiased`}
+      className={`${montserrat.variable} ${playfair.variable} ${dancingScript.variable} ${verietta.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
