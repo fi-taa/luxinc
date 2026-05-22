@@ -27,6 +27,7 @@ export interface PersonCard {
   role: string;
   image: string;
   imageAlt: string;
+  slug: string;
   tall?: boolean;
 }
 
@@ -163,18 +164,21 @@ export const architects = {
       role: "Ethiopian heritage & exclusive ecclesiastical access.",
       image: "/images/a1.png",
       imageAlt: "Classical illustration of a figure addressing a gathering",
+      slug: "team-bios",
     },
     {
       name: "Philosophical",
       role: "Private aviation director – Gulfstream, helicopter permits.",
       image: "/images/a2.png",
       imageAlt: "Classical statue of a bearded philosopher reading",
+      slug: "philosophical",
     },
     {
       name: "Elroi Backing",
       role: "Eastern Africa safari guru & luxury lodge negotiator.",
       image: "/images/a3.png",
       imageAlt: "Elroi branding on black background",
+      slug: "elroi-backing",
     },
   ] satisfies PersonCard[],
 };
@@ -202,7 +206,9 @@ export const journal = {
     body: "3 impossible requests fulfilled last month / Helicopter ski on Kilimanjaro, last-minute gorilla naming, private jet diversion for aurora.",
   },
   cta: "View More →",
-  ctaHref: "#",
+  ctaHref: "/journal/nusa-penida-bali",
+  caseStudyHref: "/journal/mughal-fort-case-study",
+  memoHref: "/journal/concierge-memo",
 };
 
 export const team = {
@@ -214,18 +220,21 @@ export const team = {
       role: "Private aviation director – Gulfstream, helicopter permits.",
       image: "/images/c1.png",
       imageAlt: "Aerial view of a lush green canyon with a winding river",
+      slug: "philosophical",
     },
     {
       name: "Meron T.",
       role: "Ethiopian heritage & exclusive ecclesiastical access.",
       image: "/images/c2.png",
       imageAlt: "Volcanic crater with glowing lava lake at night",
+      slug: "team-bios",
     },
     {
       name: "Alexandria V.",
       role: "Southern Africa safari guru & luxury lodge negotiator.",
       image: "/images/c3.png",
       imageAlt: "Tropical beach with overwater bungalows and palm trees",
+      slug: "elroi-backing",
     },
   ] satisfies PersonCard[],
 };

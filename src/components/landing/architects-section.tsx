@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { architects } from "@/lib/landing-content";
 import type { PersonCard } from "@/lib/landing-content";
+import { getContentDetailPath } from "@/lib/content-detail";
 import { FillImage } from "./fill-image";
 import { SectionShell } from "./section-shell";
 import { SectionTitle } from "./section-title";
@@ -7,8 +9,13 @@ import { SectionTitle } from "./section-title";
 const columnHeight = "md:h-[min(65vh,560px)] md:flex-1";
 
 function ArchitectCard({ member }: { member: PersonCard }) {
+  const href = getContentDetailPath("architects", member.slug);
+
   return (
-    <article className="group relative h-full min-h-[280px] w-full overflow-hidden">
+    <Link
+      href={href}
+      className="group relative block h-full min-h-[280px] w-full overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zulu-gold focus-visible:ring-offset-2 focus-visible:ring-offset-zulu-bg"
+    >
       <FillImage
         containerClassName="absolute inset-0 bg-zulu-bg"
         src={member.image}
@@ -25,7 +32,7 @@ function ArchitectCard({ member }: { member: PersonCard }) {
           {member.role}
         </p>
       </div>
-    </article>
+    </Link>
   );
 }
 
