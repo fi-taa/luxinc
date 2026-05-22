@@ -241,7 +241,7 @@ export const offices = {
       "Luxinc Pavilion, 4th Floor",
       "Addis Ababa, Ethiopia",
     ],
-    image: "/images/c2.png",
+    image: "/images/addis.png",
     imageAlt: "Addis Ababa skyline at night",
   } satisfies OfficeLocationCard,
   dubai: {
@@ -252,7 +252,7 @@ export const offices = {
       "Office 7B – The Terrace",
       "Dubai, UAE",
     ],
-    image: "/images/destination-featured.png",
+    image: "/images/dubai.png",
     imageAlt: "Dubai skyline at sunset",
   } satisfies OfficeLocationCard,
   confidential: {

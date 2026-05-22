@@ -31,8 +31,8 @@ export function CrownCollectionSection() {
               className={cn(
                 "group relative w-full max-w-[400px] overflow-hidden",
                 card.featured
-                  ? "aspect-[3/4] md:aspect-auto md:h-[min(72vh,640px)] md:max-w-[420px]"
-                  : "aspect-[4/5] md:aspect-auto md:h-[min(55vh,480px)] md:max-w-[340px]"
+                  ? "aspect-3/4 md:aspect-auto md:h-[min(72vh,640px)] md:max-w-[420px]"
+                  : "aspect-4/5 md:aspect-auto md:h-[min(55vh,480px)] md:max-w-[340px]"
               )}
             >
               <FillImage

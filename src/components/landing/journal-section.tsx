@@ -39,18 +39,18 @@ export function JournalSection() {
           <JournalGeometricPattern />
           <div className="relative z-10 w-full max-w-2xl space-y-8 lg:max-w-none lg:space-y-10">
             <div>
-              <h3 className="text-center font-diphylleia text-[clamp(1rem,2vw,22px)] font-normal leading-[1.5] tracking-normal text-zulu-gold">
+              <h3 className="text-center font-diphylleia text-[clamp(1rem,2vw,22px)] font-normal leading-normal tracking-normal text-zulu-gold">
                 {journal.caseStudy.label}
               </h3>
-              <p className="mt-3 font-encode text-[clamp(0.8125rem,1.5vw,17px)] font-normal leading-[1.5] tracking-normal text-zulu-text">
+              <p className="mt-3 font-encode text-[clamp(0.8125rem,1.5vw,17px)] font-normal leading-normal tracking-normal text-zulu-text">
                 {journal.caseStudy.body}
               </p>
             </div>
             <div>
-              <h3 className="text-center font-diphylleia text-[clamp(1rem,2vw,22px)] font-normal leading-[1.5] tracking-normal text-zulu-gold">
+              <h3 className="text-center font-diphylleia text-[clamp(1rem,2vw,22px)] font-normal leading-normal tracking-normal text-zulu-gold">
                 {journal.memo.label}
               </h3>
-              <p className="mt-3 font-encode text-[clamp(0.8125rem,1.5vw,17px)] font-normal leading-[1.5] tracking-normal text-zulu-text">
+              <p className="mt-3 font-encode text-[clamp(0.8125rem,1.5vw,17px)] font-normal leading-normal tracking-normal text-zulu-text">
                 {journal.memo.body}
               </p>
             </div>
