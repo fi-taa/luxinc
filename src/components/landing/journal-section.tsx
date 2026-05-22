@@ -23,14 +23,14 @@ export function JournalSection() {
               align="left"
             />
           </div>
-          <figure className="mt-8 w-full ml-[calc(100%-50vw)] lg:mt-10">
+          <figure className="relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 lg:mt-10 lg:ml-[calc(100%-50vw)] lg:w-full lg:max-w-none lg:translate-x-0">
             <Image
               src={journal.collageImage}
               alt={journal.collageAlt}
               width={1050}
               height={472}
               className="block h-auto w-full object-contain object-left"
-              sizes="(max-width: 1024px) 100vw, 50vw"
+              sizes="100vw"
             />
           </figure>
         </div>

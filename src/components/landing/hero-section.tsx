@@ -44,13 +44,6 @@ export function HeroSection() {
           >
             {hero.cta}
           </GoldButton>
-          <GoldButton
-            href={hero.loginHref}
-            variant="ghost-gradient"
-            className="h-12 min-w-[140px] px-10 text-sm"
-          >
-            {hero.loginCta}
-          </GoldButton>
         </div>
       </div>
     </section>

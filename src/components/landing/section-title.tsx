@@ -16,7 +16,13 @@ export function SectionTitle({
   className,
 }: SectionTitleProps) {
   return (
-    <div className={cn(align === "center" ? "text-center" : "text-left", className)}>
+    <div
+      className={cn(
+        "text-center",
+        align === "left" && "md:text-left",
+        className
+      )}
+    >
       <h2
         id={id}
         className="font-diphylleia text-[clamp(3rem,10vw,40px)] font-normal not-italic leading-none tracking-normal text-zulu-gold"
