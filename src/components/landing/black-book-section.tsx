@@ -11,7 +11,7 @@ export function BlackBookSection() {
     <SectionShell
       bordered
       ariaLabelledBy="black-book-heading"
-      className="py-0 md:py-0 lg:py-0"
+      className="py-0 md:py-0 lg:py-0 border-t border-none"
     >
       <div
         className="relative left-1/2 w-screen -translate-x-1/2"
