@@ -14,12 +14,12 @@ export function TableOfContents({ items }: TableOfContentsProps) {
 
   return (
     <div className="mt-10 text-center">
-      <p className="font-sans text-sm text-zulu-text/80">
+      <p className="font-sans text-sm text-zulu-text">
         Table of Contents{" "}
         <button
           type="button"
           onClick={() => setIsOpen((open) => !open)}
-          className="text-zulu-gold underline decoration-zulu-gold/60 underline-offset-4 transition-colors hover:text-zulu-gold-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zulu-gold focus-visible:ring-offset-2 focus-visible:ring-offset-zulu-bg"
+          className="text-zulu-text underline decoration-zulu-text/50 underline-offset-4 transition-colors hover:text-zulu-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zulu-gold focus-visible:ring-offset-2 focus-visible:ring-offset-zulu-bg"
         >
           {isOpen ? "hide" : "show"}
         </button>

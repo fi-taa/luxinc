@@ -6,7 +6,7 @@ interface DetailParagraphProps {
 
 export function DetailParagraph({ paragraph }: DetailParagraphProps) {
   return (
-    <p className="font-sans text-sm font-normal leading-relaxed text-zulu-text/90 md:text-base">
+    <p className="font-sans text-sm font-normal leading-[1.7] text-zulu-text md:text-base">
       {paragraph.segments.map((segment, index) =>
         segment.href ? (
           <a

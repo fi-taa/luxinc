@@ -6,24 +6,21 @@ interface DotsPatternProps {
 
 export function DotsPattern({ className }: DotsPatternProps) {
   return (
-    <div
-      className={className}
-      aria-hidden
-    >
+    <div className={className} aria-hidden>
       <Image
         src="/images/dots.png"
         alt=""
-        width={420}
-        height={720}
-        className="pointer-events-none absolute -left-24 top-0 h-auto w-[min(55vw,420px)] max-w-none opacity-90 md:-left-16 md:top-4"
+        width={520}
+        height={900}
+        className="pointer-events-none absolute -left-32 top-[12%] h-auto w-[min(70vw,520px)] max-w-none opacity-100 md:-left-20"
         priority={false}
       />
       <Image
         src="/images/dots.png"
         alt=""
-        width={420}
-        height={720}
-        className="pointer-events-none absolute -right-24 bottom-0 h-auto w-[min(55vw,420px)] max-w-none rotate-180 opacity-90 md:-right-16 md:bottom-4"
+        width={520}
+        height={900}
+        className="pointer-events-none absolute -right-32 bottom-[8%] h-auto w-[min(70vw,520px)] max-w-none rotate-180 opacity-100 md:-right-20"
         priority={false}
       />
     </div>

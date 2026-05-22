@@ -15,7 +15,7 @@ export function RelatedContentCard({ item }: RelatedContentCardProps) {
   return (
     <Link
       href={href}
-      className="group relative block min-h-[220px] overflow-hidden rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zulu-gold focus-visible:ring-offset-2 focus-visible:ring-offset-zulu-bg md:min-h-[260px] md:rounded-3xl"
+      className="group relative block aspect-square overflow-hidden rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zulu-gold focus-visible:ring-offset-2 focus-visible:ring-offset-zulu-bg md:rounded-3xl"
     >
       <FillImage
         containerClassName="absolute inset-0"
