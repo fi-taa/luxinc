@@ -13,6 +13,14 @@ export interface DestinationCard {
   imageAlt: string;
 }
 
+export interface DestinationSlide {
+  image: string;
+  imageAlt: string;
+  headline: string;
+  subtitle: string;
+  description: string;
+}
+
 export interface ExperienceCard {
   title: string;
   description: string;
@@ -115,36 +123,40 @@ export const commitment = {
 export const destinations = {
   titleImage: "/images/sd.png",
   titleImageAlt: "Signature Destination — East Africa & Beyond",
-  featured: {
-    image: "/images/sd2.png",
-    imageAlt: "Ethiopia landscape with palm trees and city skyline",
-    captionTitle: "Ethiopia — Sacred Origins",
-    captionBody:
-      "After-hours Lalibela, helicopter over Danakil lava lake, private liturgy at Holy Trinity. Unmatched.",
-  },
-  cards: [
+  slides: [
     {
-      title: "Kenya — The Untamed Covenant",
+      image: "/images/sd2.png",
+      imageAlt: "Ethiopia landscape with palm trees and city skyline",
+      headline: "Signature Destination",
+      subtitle: "Sacred Origins",
       description:
-        "Private Masai Mara conservancies, rhino tracking by foot, mid-air helicopter transfers.",
+        "After-hours Lalibela, helicopter over Danakil lava lake, private liturgy at Holy Trinity. Unmatched.",
+    },
+    {
       image: "/images/sd3.png",
       imageAlt: "Giraffes with Kilimanjaro in the background",
+      headline: "Addis Ababa",
+      subtitle: "The Untamed Covenant",
+      description:
+        "Private Masai Mara conservancies, rhino tracking by foot, mid-air helicopter transfers.",
     },
     {
-      title: "Rwanda & Tanzania",
-      description:
-        "Gorilla naming ceremonies, night descent into Ngorongoro Crater, private Mnemba Island.",
       image: "/images/sd4.png",
       imageAlt: "Tropical beach with turquoise water",
+      headline: "Rwanda",
+      subtitle: "Crater & Coast",
+      description:
+        "Gorilla naming ceremonies, night descent into Ngorongoro Crater, private Mnemba Island.",
     },
     {
-      title: "Global Extensions",
-      description:
-        "Maldives private atolls, Japanese ryokan buyouts, Tuscan villa & helicopter fleet.",
       image: "/images/sd5.png",
       imageAlt: "World landmarks and private aviation",
+      headline: "Global",
+      subtitle: "Beyond Africa",
+      description:
+        "Maldives private atolls, Japanese ryokan buyouts, Tuscan villa & helicopter fleet.",
     },
-  ] satisfies DestinationCard[],
+  ] satisfies DestinationSlide[],
 };
 
 export const crownCollection = {
