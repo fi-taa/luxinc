@@ -13,7 +13,7 @@ export function JournalSection() {
       fullWidth
       className="overflow-hidden"
     >
-      <div className="relative flex flex-col lg:flex-row lg:items-center">
+      <div className="relative flex flex-col lg:flex-row lg:items-stretch">
         <div className="flex min-w-0 flex-col lg:w-1/2 lg:shrink-0">
           <div className="px-6 md:px-10 lg:pl-16 lg:pr-8">
             <SectionTitle
@@ -35,7 +35,7 @@ export function JournalSection() {
           </figure>
         </div>
 
-        <div className="relative flex flex-col justify-center px-6 py-10 md:min-h-[400px] md:px-10 lg:w-1/2 lg:shrink-0 lg:py-0 lg:pl-8 lg:pr-10 xl:pl-10 xl:pr-12">
+        <div className="relative flex min-h-[400px] flex-col justify-center overflow-visible px-6 py-10 md:px-10 lg:w-1/2 lg:shrink-0 lg:py-0 lg:pl-8 lg:pr-10 xl:pl-10 xl:pr-12">
           <JournalGeometricPattern />
           <div className="relative z-10 w-full max-w-2xl space-y-8 lg:max-w-none lg:space-y-10">
             <div>

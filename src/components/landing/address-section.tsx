@@ -9,6 +9,17 @@ import { SectionShell } from "./section-shell";
 import { SectionTitle } from "./section-title";
 import { cn } from "@/lib/utils";
 
+const imageBleedTopClasses = {
+  subtle: {
+    image: "-mt-8 md:-mt-10 lg:-mt-12",
+    text: "-mt-8 pt-2 md:-mt-10 md:pt-3",
+  },
+  full: {
+    image: "-mt-12 md:-mt-16 lg:-mt-20",
+    text: "-mt-10 pt-2 md:-mt-12 md:pt-3",
+  },
+} as const;
+
 function OfficeLocationPanel({
   office,
   imageAspect,
@@ -17,9 +28,11 @@ function OfficeLocationPanel({
 }: {
   office: OfficeLocationCard;
   imageAspect: string;
-  imageBleedTop?: boolean;
+  imageBleedTop?: false | keyof typeof imageBleedTopClasses;
   fillHeight?: boolean;
 }) {
+  const bleed = imageBleedTop ? imageBleedTopClasses[imageBleedTop] : null;
+
   return (
     <article
       className={cn(
@@ -31,7 +44,7 @@ function OfficeLocationPanel({
         className={cn(
           "relative z-10 w-full px-4 md:px-6 lg:px-8",
           fillHeight ? "min-h-0 flex-1" : "shrink-0",
-          imageBleedTop && "-mt-12 md:-mt-16 lg:-mt-20"
+          bleed?.image
         )}
       >
         <FillImage
@@ -48,7 +61,7 @@ function OfficeLocationPanel({
       <div
         className={cn(
           "relative z-20 flex shrink-0 flex-col justify-center bg-luxinc-panel px-6 py-8 text-center md:px-8 md:py-10",
-          imageBleedTop && "-mt-10 pt-2 md:-mt-12 md:pt-3"
+          bleed?.text
         )}
       >
         <h3 className="font-diphylleia text-lg font-normal tracking-wide text-zulu-gold md:text-xl">
@@ -114,7 +127,7 @@ export function AddressSection() {
       className="font-diphylleia"
     >
       <div className="grid grid-cols-1 gap-4 overflow-visible lg:grid-cols-2 lg:items-stretch lg:gap-5">
-        <div className="flex min-h-0 flex-col gap-8 overflow-visible md:gap-10">
+        <div className="flex min-h-0 flex-col gap-10 overflow-visible md:gap-12 lg:gap-14">
           <SectionTitle
             id="contact-heading"
             title={offices.title}
@@ -126,6 +139,7 @@ export function AddressSection() {
             office={offices.addis}
             imageAspect="aspect-4/5 min-h-[280px]"
             fillHeight
+            imageBleedTop="subtle"
           />
         </div>
 
@@ -133,7 +147,7 @@ export function AddressSection() {
           <OfficeLocationPanel
             office={offices.dubai}
             imageAspect="aspect-[16/10] min-h-[200px]"
-            imageBleedTop
+            imageBleedTop="full"
           />
           <ConfidentialPanel />
         </div>

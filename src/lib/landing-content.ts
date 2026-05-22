@@ -277,15 +277,10 @@ export const offices = {
 
 export const footer = {
   quote:
-    "Memories from Luxinc... My travel is impossible dream. It's a constant creation.",
-  copyright: "© 2026 Luxinc. All rights reserved.",
-  links: [
-    { label: "Privacy Policy", href: "#" },
-    { label: "Terms of Service", href: "#" },
-  ],
-  social: [
-    { label: "Instagram", href: "#" },
-    { label: "LinkedIn", href: "#" },
-    { label: "Twitter", href: "#" },
-  ],
+    "Flawless from takeoff to landing – they turned an impossible dream into a seamless narrative.",
+  attribution: "— Mrs. Salmani A.",
+  tagline: "Architects of the Impossible. Custodians of Discretion.",
+  locations: "Addis Ababa · Dubai | Member of Elroi Investment Group",
+  copyright:
+    "© 2026 Luxinc Luxury Tour & Travel. No public pricing. Zero data leakage.",
 };

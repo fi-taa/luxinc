@@ -1,36 +1,39 @@
-import Link from "next/link";
+import Image from "next/image";
 import { footer } from "@/lib/landing-content";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-zulu-border py-20 md:py-28">
-      <div className="mx-auto w-full max-w-[1280px] px-6 text-center md:px-10 lg:px-16">
-        <blockquote className="mx-auto max-w-3xl font-script text-2xl italic leading-relaxed text-zulu-gold md:text-3xl lg:text-4xl">
+    <footer>
+      <div className="px-6 py-20 text-center md:px-10 md:py-28 lg:px-16">
+        <Image
+          src="/images/feather.png"
+          alt=""
+          width={120}
+          height={120}
+          className="mx-auto h-16 w-auto md:h-20"
+          aria-hidden
+        />
+        <blockquote
+          className="mx-auto mt-10 max-w-3xl font-homemade-apple text-2xl font-normal leading-normal text-zulu-text md:mt-12 md:text-3xl lg:text-4xl"
+          style={{ fontFamily: '"Homemade Apple", cursive' }}
+        >
           &ldquo;{footer.quote}&rdquo;
         </blockquote>
-        <div className="mt-14 flex flex-wrap items-center justify-center gap-8 md:gap-10">
-          {footer.social.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="font-sans text-[10px] font-medium uppercase tracking-[0.25em] text-zulu-text-muted transition-colors hover:text-zulu-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zulu-gold"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </div>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-6">
-          {footer.links.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="font-sans text-[10px] text-zulu-text-muted transition-colors hover:text-zulu-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zulu-gold"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-        <p className="mt-10 font-sans text-[10px] uppercase tracking-[0.15em] text-zulu-text-muted">
+        <p className="mt-8 font-diphylleia text-base font-normal text-zulu-gold md:text-lg">
+          {footer.attribution}
+        </p>
+      </div>
+
+      <div className="bg-luxinc-panel px-6 py-10 text-center md:px-10 md:py-12 lg:px-16">
+        <p className="font-diphylleia text-sm font-normal leading-relaxed text-zulu-gold md:text-base">
+          <span className="font-normal text-zulu-gold">LUXINC</span>
+          {" — "}
+          {footer.tagline}
+        </p>
+        <p className="mt-3 font-diphylleia text-sm font-normal leading-relaxed text-zulu-gold md:text-base">
+          {footer.locations}
+        </p>
+        <p className="mt-3 font-diphylleia text-sm font-normal leading-relaxed text-zulu-gold/90 md:text-base">
           {footer.copyright}
         </p>
       </div>

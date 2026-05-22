@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Diphylleia&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -10,6 +11,14 @@
   font-display: swap;
   src: url("/fonts/edu-au-vic-wa-nt-guides/EduAUVICWANTGuides-Regular.ttf")
     format("truetype");
+}
+
+@font-face {
+  font-family: "Homemade Apple";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/homemade-apple/HomemadeApple-Regular.ttf") format("truetype");
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -25,6 +34,7 @@
     sans-serif;
   --font-script: var(--font-dancing), cursive;
   --font-edu-guides: "Edu AU VIC WA NT Guides", cursive;
+  --font-homemade-apple: "Homemade Apple", cursive;
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-playfair), ui-serif, Georgia, serif;
   --color-zulu-bg: #000000;
