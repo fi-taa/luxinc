@@ -80,6 +80,30 @@ export const hero = {
   imageAlt: "Addis Ababa city boulevard at night",
 };
 
+export const auth = {
+  image: "/images/auth.png",
+  imageAlt: "Tropical coastline with turquoise water and limestone cliffs at Diamond Beach",
+  subtitle: "Our Travel Architect Respond within 4 hours",
+  signIn: {
+    title: "SIGN IN",
+    emailPlaceholder: "Email",
+    passwordPlaceholder: "Password",
+    submitLabel: "Sign In",
+    switchPrompt: "Don't Have an Account?",
+    switchAction: "Sign UP",
+  },
+  signUp: {
+    title: "SIGN UP",
+    fullNamePlaceholder: "Full name",
+    emailPlaceholder: "Email",
+    passwordPlaceholder: "Password",
+    confirmPasswordPlaceholder: "Confirm Password",
+    submitLabel: "Sign Up",
+    switchPrompt: "Already Have an Account ?",
+    switchAction: "Sign In",
+  },
+};
+
 export const commitment = {
   symbol: "4h",
   line1:

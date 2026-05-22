@@ -167,3 +167,28 @@
     }
   }
 }
+
+@keyframes auth-form-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-form-enter {
+  animation: auth-form-enter 0.35s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-panel-swap {
+    transition: none !important;
+  }
+
+  .auth-form-enter {
+    animation: none;
+  }
+}

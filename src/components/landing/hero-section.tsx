@@ -1,6 +1,6 @@
 import Image from "next/image";
+import { AuthCtaButton } from "@/components/auth/auth-cta-button";
 import { hero } from "@/lib/landing-content";
-import { GoldButton } from "./gold-button";
 
 export function HeroSection() {
   return (
@@ -37,13 +37,13 @@ export function HeroSection() {
           {hero.subheadline}
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <GoldButton
-            href={hero.ctaHref}
+          <AuthCtaButton
+            action="sign-up"
             variant="solid"
             className="h-12 min-w-[200px] px-10 text-sm"
           >
             {hero.cta}
-          </GoldButton>
+          </AuthCtaButton>
         </div>
       </div>
     </section>

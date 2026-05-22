@@ -6,6 +6,7 @@ import {
   Montserrat,
   Playfair_Display,
 } from "next/font/google";
+import { AuthModalProvider } from "@/components/auth/auth-modal-provider";
 import "./globals.css";
 
 const verietta = localFont({
@@ -75,7 +76,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-full flex flex-col"
       >
-        {children}
+        <AuthModalProvider>{children}</AuthModalProvider>
       </body>
     </html>
   );

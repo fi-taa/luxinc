@@ -1,7 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { hero, navLinks, site } from "@/lib/landing-content";
 import type { NavLink } from "@/lib/landing-content";
+import { AuthCtaButton } from "@/components/auth/auth-cta-button";
 import { GoldButton } from "./gold-button";
 import { MobileNav } from "./mobile-nav";
 
@@ -35,6 +38,10 @@ function resolveNavLinks(
   });
 }
 
+function ctaActionForLabel(label: string): "sign-in" | "sign-up" {
+  return label === hero.cta ? "sign-up" : "sign-in";
+}
+
 export function SiteHeader({
   variant = "hero",
   activeHref,
@@ -43,15 +50,12 @@ export function SiteHeader({
   const isPage = variant === "page";
   const resolvedLinks = resolveNavLinks(navLinks, isPage, activeHref);
   const headerCta = cta ?? site.navCta;
-  const resolvedCta = {
-    label: headerCta.label,
-    href: resolveNavHref(headerCta.href, isPage),
-  };
   const defaultDetailCta = {
     label: hero.cta,
     href: resolveNavHref(hero.ctaHref, isPage),
   };
-  const displayCta = isPage && !cta ? defaultDetailCta : resolvedCta;
+  const displayCta = isPage && !cta ? defaultDetailCta : headerCta;
+  const ctaAction = ctaActionForLabel(displayCta.label);
 
   return (
     <header
@@ -94,14 +98,18 @@ export function SiteHeader({
           ))}
         </nav>
         <div className="flex items-center justify-end gap-4">
-          <GoldButton
-            href={displayCta.href}
+          <AuthCtaButton
+            action={ctaAction}
             variant="outline"
             className="hidden shrink-0 md:inline-flex"
           >
             {displayCta.label}
-          </GoldButton>
-          <MobileNav links={resolvedLinks} cta={displayCta} />
+          </AuthCtaButton>
+          <MobileNav
+            links={resolvedLinks}
+            ctaLabel={displayCta.label}
+            ctaAction={ctaAction}
+          />
         </div>
       </div>
     </header>

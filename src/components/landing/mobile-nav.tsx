@@ -4,20 +4,16 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import type { NavLink } from "@/lib/landing-content";
+import { AuthCtaButton } from "@/components/auth/auth-cta-button";
 import { cn } from "@/lib/utils";
-import { GoldButton } from "./gold-button";
-
-interface NavCta {
-  label: string;
-  href: string;
-}
 
 interface MobileNavProps {
   links: NavLink[];
-  cta: NavCta;
+  ctaLabel: string;
+  ctaAction: "sign-in" | "sign-up";
 }
 
-export function MobileNav({ links, cta }: MobileNavProps) {
+export function MobileNav({ links, ctaLabel, ctaAction }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -58,14 +54,14 @@ export function MobileNav({ links, cta }: MobileNavProps) {
           ))}
         </ul>
         <div className="border-t border-zulu-border px-6 py-4">
-          <GoldButton
-            href={cta.href}
+          <AuthCtaButton
+            action={ctaAction}
             variant="ghost"
             className="w-full border-zulu-gold/40 bg-zulu-gold/20 text-zulu-gold hover:bg-zulu-gold/30"
-            onClick={() => setIsOpen(false)}
+            onActivate={() => setIsOpen(false)}
           >
-            {cta.label}
-          </GoldButton>
+            {ctaLabel}
+          </AuthCtaButton>
         </div>
       </nav>
     </div>
