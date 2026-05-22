@@ -67,7 +67,7 @@ function DestinationCarouselCaption({
 }: DestinationCarouselCaptionProps) {
   if (fixedHeadline) {
     return (
-      <div className="mt-4 min-h-[5.25rem] md:min-h-[5.75rem]">
+      <div className="mt-4 min-h-21 md:min-h-23">
         <h3 className="font-serif text-base text-zulu-gold md:text-lg">
           {fixedHeadline}
           {" — "}
@@ -89,7 +89,7 @@ function DestinationCarouselCaption({
             ))}
           </span>
         </h3>
-        <div className="relative mt-2 min-h-[3.25rem] md:min-h-[3.5rem]">
+        <div className="relative mt-2 min-h-13 md:min-h-14">
           {slides.map((slide, index) => (
             <p
               key={`${slide.image}-description`}
@@ -111,7 +111,7 @@ function DestinationCarouselCaption({
   }
 
   return (
-    <div className="relative mt-4 min-h-[5.25rem] md:min-h-[5.75rem]">
+    <div className="relative mt-4 min-h-21 md:min-h-23">
       {slides.map((slide, index) => (
         <div
           key={slide.image}
@@ -154,7 +154,7 @@ interface DestinationCarouselProps {
 
 export function DestinationCarousel({
   slides,
-  aspectClassName = "aspect-[3/4] w-full",
+  aspectClassName = "aspect-3/4 w-full",
   imageSizes = "(max-width: 1024px) 100vw, 50vw",
   priority = false,
   initialIndex = 0,

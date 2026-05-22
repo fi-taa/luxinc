@@ -17,7 +17,7 @@ export function DestinationsInteractive() {
             {titleImageAlt}
           </h2>
           <FillImage
-            containerClassName="aspect-[3/4] w-full bg-luxinc-panel lg:aspect-auto lg:h-full"
+            containerClassName="aspect-3/4 w-full bg-luxinc-panel lg:aspect-auto lg:h-full"
             src={titleImage}
             alt={titleImageAlt}
             className="object-contain"
@@ -41,7 +41,7 @@ export function DestinationsInteractive() {
               slides={slides}
               initialIndex={initialIndex}
               fixedHeadline={slide.headline}
-              aspectClassName="aspect-[4/3] w-full"
+              aspectClassName="aspect-4/3 w-full"
               imageSizes="(max-width: 768px) 100vw, 33vw"
             />
           );

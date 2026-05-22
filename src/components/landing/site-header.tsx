@@ -100,7 +100,7 @@ export function SiteHeader({
         <div className="flex items-center justify-end gap-4">
           <AuthCtaButton
             action={ctaAction}
-            variant="outline"
+            variant="soft"
             className="hidden shrink-0 md:inline-flex"
           >
             {displayCta.label}

@@ -6,7 +6,7 @@ import { useAuthModal } from "./auth-modal-provider";
 interface AuthCtaButtonProps {
   action: "sign-in" | "sign-up";
   children: React.ReactNode;
-  variant?: "outline" | "solid" | "ghost" | "ghost-gradient";
+  variant?: "outline" | "solid" | "soft" | "ghost" | "ghost-gradient";
   className?: string;
   onActivate?: () => void;
 }

@@ -56,8 +56,8 @@ export function MobileNav({ links, ctaLabel, ctaAction }: MobileNavProps) {
         <div className="border-t border-zulu-border px-6 py-4">
           <AuthCtaButton
             action={ctaAction}
-            variant="ghost"
-            className="w-full border-zulu-gold/40 bg-zulu-gold/20 text-zulu-gold hover:bg-zulu-gold/30"
+            variant="soft"
+            className="w-full"
             onActivate={() => setIsOpen(false)}
           >
             {ctaLabel}
