@@ -3,6 +3,15 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@font-face {
+  font-family: "Edu AU VIC WA NT Guides";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/edu-au-vic-wa-nt-guides/EduAUVICWANTGuides-Regular.ttf")
+    format("truetype");
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -12,7 +21,10 @@
   --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
   --font-verietta: var(--font-verietta-src), ui-serif, Georgia, serif;
   --font-diphylleia: "Diphylleia", ui-serif, Georgia, serif;
+  --font-encode: var(--font-encode-sans-semi-expanded), ui-sans-serif, system-ui,
+    sans-serif;
   --font-script: var(--font-dancing), cursive;
+  --font-edu-guides: "Edu AU VIC WA NT Guides", cursive;
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-playfair), ui-serif, Georgia, serif;
   --color-zulu-bg: #000000;

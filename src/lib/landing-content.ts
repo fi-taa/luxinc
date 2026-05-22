@@ -19,6 +19,7 @@ export interface ExperienceCard {
   image: string;
   imageAlt: string;
   href: string;
+  featured?: boolean;
 }
 
 export interface PersonCard {
@@ -26,6 +27,7 @@ export interface PersonCard {
   role: string;
   image: string;
   imageAlt: string;
+  tall?: boolean;
 }
 
 export interface JournalArticle {
@@ -36,13 +38,17 @@ export interface JournalArticle {
   href: string;
 }
 
-export interface OfficeCard {
-  city: string;
-  address: string;
-  phone: string;
-  email: string;
+export interface OfficeLocationCard {
+  heading: string;
+  lines: string[];
   image: string;
   imageAlt: string;
+}
+
+export interface ConfidentialContactLine {
+  icon: "mail" | "whatsapp" | "lock";
+  text: string;
+  href?: string;
 }
 
 export const site = {
@@ -118,27 +124,31 @@ export const destinations = {
 
 export const crownCollection = {
   title: "The Crown Collection",
-  subtitle: "extraordinary experiences",
+  subtitle: "unrepeatable odysseys",
   cards: [
     {
-      title: "Ocean Sovereignty",
-      description: "Private yacht charters across the Indian Ocean",
-      image: placeholderImages.cruise,
-      imageAlt: "Luxury cruise ship",
+      title: "THE CROWN ODYSSEY OF THE RIFT →",
+      description:
+        "14 days, full lodge buyouts, Gulfstream G650, Michelin chef, crater night descent.",
+      image: "/images/c1.png",
+      imageAlt: "Aerial view of a lush green canyon with a winding river",
       href: "#",
     },
     {
-      title: "Desert Kingdom",
-      description: "Exclusive desert retreats under infinite stars",
-      image: placeholderImages.desert,
-      imageAlt: "Desert landscape at sunset",
+      title: "THE LAST FRONTIER →",
+      description:
+        "9 days – Danakil, Simiens & exclusive Mara. Volcano cable slide and starlit dinners.",
+      image: "/images/c2.png",
+      imageAlt: "Volcanic crater with glowing lava lake at night",
       href: "#",
+      featured: true,
     },
     {
-      title: "Urban Elegance",
-      description: "Metropolitan luxury in the world's finest cities",
-      image: placeholderImages.skyline,
-      imageAlt: "City skyline at night",
+      title: "CORPORATE CROWN →",
+      description:
+        "Invisible board retreats for 10–50 executives. Absolute secrecy, flawless operations.",
+      image: "/images/c3.png",
+      imageAlt: "Tropical beach with overwater bungalows and palm trees",
       href: "#",
     },
   ] satisfies ExperienceCard[],
@@ -149,69 +159,50 @@ export const architects = {
   subtitle: "masters of impossible logistics",
   members: [
     {
-      name: "James Whitfield",
-      role: "Chief Travel Architect",
-      image: placeholderImages.architect1,
-      imageAlt: "James Whitfield portrait",
+      name: "Team Bios",
+      role: "Ethiopian heritage & exclusive ecclesiastical access.",
+      image: "/images/a1.png",
+      imageAlt: "Classical illustration of a figure addressing a gathering",
     },
     {
-      name: "Sarah Chen",
-      role: "Destination Curator",
-      image: placeholderImages.architect2,
-      imageAlt: "Sarah Chen portrait",
+      name: "Philosophical",
+      role: "Private aviation director – Gulfstream, helicopter permits.",
+      image: "/images/a2.png",
+      imageAlt: "Classical statue of a bearded philosopher reading",
     },
     {
-      name: "Marcus Okonkwo",
-      role: "Experience Designer",
-      image: placeholderImages.architect3,
-      imageAlt: "Marcus Okonkwo portrait",
+      name: "Elroi Backing",
+      role: "Eastern Africa safari guru & luxury lodge negotiator.",
+      image: "/images/a3.png",
+      imageAlt: "Elroi branding on black background",
     },
   ] satisfies PersonCard[],
 };
 
 export const blackBook = {
-  title: "The Luxury Black Book",
-  subtitle: "Exclusive access to the world's finest establishments",
-  placeholder: "Enter your email for privileged access",
-  buttonLabel: "Subscribe",
+  title: "The Luxinc Black Book",
+  subtitle:
+    "5 experiences you cannot book online. Receive our confidential PDF.",
+  placeholder: "Your Exclusive Email",
+  buttonLabel: "Send",
 };
 
 export const journal = {
   title: "Journal",
-  subtitle: "The Concierge Voice",
-  articles: [
-    {
-      title: "The Art of Slow Travel",
-      date: "March 2026",
-      image: placeholderImages.journal1,
-      imageAlt: "Slow travel article thumbnail",
-      href: "#",
-    },
-    {
-      title: "Hidden Gems of the Serengeti",
-      date: "February 2026",
-      image: placeholderImages.journal2,
-      imageAlt: "Serengeti article thumbnail",
-      href: "#",
-    },
-    {
-      title: "Private Aviation Redefined",
-      date: "January 2026",
-      image: placeholderImages.journal3,
-      imageAlt: "Private aviation article thumbnail",
-      href: "#",
-    },
-  ] satisfies JournalArticle[],
-  featured: {
-    label: "Case Study",
-    title: "A Royal Safari: 14 Days Across East Africa",
-    description:
-      "How we orchestrated an impossible itinerary for a family of four, spanning three countries, five lodges, and a private charter—delivered in under 4 hours from first inquiry.",
-    image: placeholderImages.caseStudy,
-    imageAlt: "Safari case study feature image",
-    cta: "Read More",
-    href: "#",
+  subtitle: "The Concierge Memo",
+  collageImage: "/images/j.png",
+  collageAlt:
+    "Journal collage featuring Taj Mahal, Ethiopia travel, and Santorini destinations",
+  caseStudy: {
+    label: "CASE STUDY",
+    body: "Private dinner inside a closed Mughal fort / \"72-hour orchestration: antiques, original frescoes, a 12-course heritage meal.\"",
   },
+  memo: {
+    label: "THE MEMO",
+    body: "3 impossible requests fulfilled last month / Helicopter ski on Kilimanjaro, last-minute gorilla naming, private jet diversion for aurora.",
+  },
+  cta: "View More →",
+  ctaHref: "#",
 };
 
 export const team = {
@@ -219,22 +210,22 @@ export const team = {
   subtitle: "masters of impossible logistics",
   members: [
     {
-      name: "Elena Vasquez",
-      role: "Head of Concierge",
-      image: placeholderImages.team1,
-      imageAlt: "Elena Vasquez headshot",
+      name: "James C.",
+      role: "Private aviation director – Gulfstream, helicopter permits.",
+      image: "/images/c1.png",
+      imageAlt: "Aerial view of a lush green canyon with a winding river",
     },
     {
-      name: "David Okafor",
-      role: "Logistics Director",
-      image: placeholderImages.team2,
-      imageAlt: "David Okafor headshot",
+      name: "Meron T.",
+      role: "Ethiopian heritage & exclusive ecclesiastical access.",
+      image: "/images/c2.png",
+      imageAlt: "Volcanic crater with glowing lava lake at night",
     },
     {
-      name: "Amelia Hart",
-      role: "Client Relations",
-      image: placeholderImages.team3,
-      imageAlt: "Amelia Hart headshot",
+      name: "Alexandria V.",
+      role: "Southern Africa safari guru & luxury lodge negotiator.",
+      image: "/images/c3.png",
+      imageAlt: "Tropical beach with overwater bungalows and palm trees",
     },
   ] satisfies PersonCard[],
 };
@@ -242,24 +233,46 @@ export const team = {
 export const offices = {
   title: "Address Info",
   subtitle: "masters of impossible logistics",
-  locations: [
-    {
-      city: "London",
-      address: "14 Berkeley Square, Mayfair, London W1J 6BR",
-      phone: "+44 20 7123 4567",
-      email: "london@luxinc.com",
-      image: placeholderImages.london,
-      imageAlt: "London cityscape",
-    },
-    {
-      city: "Dubai",
-      address: "Level 42, Emirates Towers, Sheikh Zayed Road, Dubai",
-      phone: "+971 4 123 4567",
-      email: "dubai@luxinc.com",
-      image: placeholderImages.dubai,
-      imageAlt: "Dubai skyline",
-    },
-  ] satisfies OfficeCard[],
+  addis: {
+    heading: "ADDIS ABABA · ETHIOPIA",
+    lines: [
+      "Global Headquarters",
+      "Bole Road, Cape Verde Street",
+      "Luxinc Pavilion, 4th Floor",
+      "Addis Ababa, Ethiopia",
+    ],
+    image: "/images/c2.png",
+    imageAlt: "Addis Ababa skyline at night",
+  } satisfies OfficeLocationCard,
+  dubai: {
+    heading: "DUBAI · UNITED ARAB EMIRATES",
+    lines: [
+      "Middle East Representative Office",
+      "Burj Al Arab Jumeirah, Private Wing",
+      "Office 7B – The Terrace",
+      "Dubai, UAE",
+    ],
+    image: "/images/destination-featured.png",
+    imageAlt: "Dubai skyline at sunset",
+  } satisfies OfficeLocationCard,
+  confidential: {
+    title: "Confidential Contact",
+    lines: [
+      {
+        icon: "mail",
+        text: "architects@luxinc.com (encrypted)",
+        href: "mailto:architects@luxinc.com",
+      },
+      {
+        icon: "whatsapp",
+        text: "WhatsApp: +251 9X XXX XXXX (clients only)",
+      },
+      {
+        icon: "lock",
+        text: "PGP key upon request",
+      },
+    ] satisfies ConfidentialContactLine[],
+  },
 };
 
 export const footer = {

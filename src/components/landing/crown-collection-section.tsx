@@ -1,8 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
 import { crownCollection } from "@/lib/landing-content";
-import { SectionHeading } from "./section-heading";
+import { FillImage } from "./fill-image";
 import { SectionShell } from "./section-shell";
+import { SectionTitle } from "./section-title";
+import { cn } from "@/lib/utils";
 
 export function CrownCollectionSection() {
   return (
@@ -10,43 +11,56 @@ export function CrownCollectionSection() {
       id="crown-collection"
       bordered
       ariaLabelledBy="experiences-heading"
+      className="relative overflow-hidden"
     >
-      <SectionHeading
-        id="experiences-heading"
-        title={crownCollection.title}
-        subtitle={crownCollection.subtitle}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-0 left-0 top-0 z-0 w-[min(45%,320px)] bg-[url('/images/dots.png')] bg-left bg-no-repeat bg-contain md:w-[300px] lg:w-[360px]"
       />
-      <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3 lg:mt-20 lg:gap-8">
-        {crownCollection.cards.map((card) => (
-          <article
-            key={card.title}
-            className="group relative aspect-[3/4] overflow-hidden md:aspect-[4/5]"
-            style={{ position: "relative" }}
-          >
-            <Image
-              src={card.image}
-              alt={card.imageAlt}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-              sizes="(max-width: 768px) 100vw, 33vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10" />
-            <div className="absolute inset-x-0 bottom-0 flex flex-col p-6 md:p-8">
-              <h3 className="font-serif text-xl text-zulu-gold md:text-2xl">
-                {card.title}
-              </h3>
-              <p className="mt-2 font-sans text-xs leading-relaxed text-zulu-text-muted md:text-sm">
-                {card.description}
-              </p>
-              <Link
-                href={card.href}
-                className="mt-5 self-start font-sans text-[10px] font-medium uppercase tracking-[0.25em] text-zulu-gold transition-colors hover:text-zulu-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zulu-gold"
-              >
-                Explore
-              </Link>
-            </div>
-          </article>
-        ))}
+      <div className="relative z-10">
+        <SectionTitle
+          id="experiences-heading"
+          title={crownCollection.title}
+          subtitle={crownCollection.subtitle}
+        />
+
+        <div className="mt-14 flex flex-col items-center gap-5 md:mt-20 md:flex-row md:items-end md:justify-center md:gap-4 lg:gap-5">
+          {crownCollection.cards.map((card) => (
+            <article
+              key={card.title}
+              className={cn(
+                "group relative w-full max-w-[400px] overflow-hidden",
+                card.featured
+                  ? "aspect-[3/4] md:aspect-auto md:h-[min(72vh,640px)] md:max-w-[420px]"
+                  : "aspect-[4/5] md:aspect-auto md:h-[min(55vh,480px)] md:max-w-[340px]"
+              )}
+            >
+              <FillImage
+                containerClassName="absolute inset-0"
+                src={card.image}
+                alt={card.imageAlt}
+                className="transition-transform duration-500 group-hover:scale-105"
+                sizes={
+                  card.featured
+                    ? "(max-width: 768px) 100vw, 420px"
+                    : "(max-width: 768px) 100vw, 340px"
+                }
+              />
+              <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/25 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 flex flex-col p-5 md:p-6 lg:p-7">
+                <Link
+                  href={card.href}
+                  className="font-sans text-[11px] font-medium uppercase leading-snug tracking-[0.12em] text-zulu-text transition-colors hover:text-zulu-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zulu-gold"
+                >
+                  {card.title}
+                </Link>
+                <p className="mt-2 max-w-[28ch] font-sans text-[11px] font-normal leading-relaxed text-zulu-text/90 md:text-xs">
+                  {card.description}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </SectionShell>
   );

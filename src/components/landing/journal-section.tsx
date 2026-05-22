@@ -1,67 +1,67 @@
+import Image from "next/image";
 import Link from "next/link";
-import { FillImage } from "./fill-image";
 import { journal } from "@/lib/landing-content";
-import { GoldButton } from "./gold-button";
-import { SectionHeading } from "./section-heading";
+import { JournalGeometricPattern } from "./journal-geometric-pattern";
 import { SectionShell } from "./section-shell";
+import { SectionTitle } from "./section-title";
 
 export function JournalSection() {
   return (
-    <SectionShell id="journal" ariaLabelledBy="journal-heading">
-      <SectionHeading
-        id="journal-heading"
-        title={journal.title}
-        subtitle={journal.subtitle}
-      />
-      <div className="mt-14 grid gap-12 lg:mt-20 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16 xl:gap-20">
-        <div className="flex flex-col">
-          {journal.articles.map((article) => (
-            <Link
-              key={article.title}
-              href={article.href}
-              className="group flex gap-5 border-b border-zulu-border py-6 transition-colors first:pt-0 hover:border-zulu-gold/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zulu-gold focus-visible:ring-offset-4 focus-visible:ring-offset-zulu-bg"
-            >
-              <FillImage
-                containerClassName="h-[72px] w-[72px] shrink-0 md:h-20 md:w-20"
-                src={article.image}
-                alt={article.imageAlt}
-                sizes="80px"
-              />
-              <div className="flex min-w-0 flex-col justify-center">
-                <h3 className="font-serif text-base leading-snug text-zulu-gold transition-colors group-hover:text-zulu-text md:text-lg">
-                  {article.title}
-                </h3>
-                <p className="mt-2 font-sans text-[10px] uppercase tracking-[0.2em] text-zulu-text-muted">
-                  {article.date}
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
-        <article className="flex flex-col">
-          <FillImage
-            containerClassName="aspect-[4/3] w-full lg:aspect-[16/11]"
-            src={journal.featured.image}
-            alt={journal.featured.imageAlt}
-            sizes="(max-width: 1024px) 100vw, 55vw"
-          />
-          <div className="flex flex-1 flex-col pt-8 lg:pt-10">
-            <p className="font-sans text-[10px] font-medium uppercase tracking-[0.3em] text-zulu-gold">
-              {journal.featured.label}
-            </p>
-            <h3 className="mt-4 font-serif text-2xl leading-snug text-zulu-gold md:text-3xl lg:text-[2rem]">
-              {journal.featured.title}
-            </h3>
-            <p className="mt-5 flex-1 font-sans text-sm leading-[1.8] text-zulu-text-muted md:text-base">
-              {journal.featured.description}
-            </p>
-            <div className="mt-8">
-              <GoldButton href={journal.featured.href}>
-                {journal.featured.cta}
-              </GoldButton>
-            </div>
+    <SectionShell
+      id="journal"
+      ariaLabelledBy="journal-heading"
+      fullWidth
+      className="overflow-hidden"
+    >
+      <div className="relative flex flex-col lg:flex-row lg:items-center">
+        <div className="flex min-w-0 flex-col lg:w-1/2 lg:shrink-0">
+          <div className="px-6 md:px-10 lg:pl-16 lg:pr-8">
+            <SectionTitle
+              id="journal-heading"
+              title={journal.title}
+              subtitle={journal.subtitle}
+              align="left"
+            />
           </div>
-        </article>
+          <figure className="mt-8 w-full ml-[calc(100%-50vw)] lg:mt-10">
+            <Image
+              src={journal.collageImage}
+              alt={journal.collageAlt}
+              width={1050}
+              height={472}
+              className="block h-auto w-full object-contain object-left"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
+          </figure>
+        </div>
+
+        <div className="relative flex flex-col justify-center px-6 py-10 md:min-h-[400px] md:px-10 lg:w-1/2 lg:shrink-0 lg:py-0 lg:pl-8 lg:pr-10 xl:pl-10 xl:pr-12">
+          <JournalGeometricPattern />
+          <div className="relative z-10 w-full max-w-2xl space-y-8 lg:max-w-none lg:space-y-10">
+            <div>
+              <h3 className="text-center font-diphylleia text-[clamp(1rem,2vw,22px)] font-normal leading-[1.5] tracking-normal text-zulu-gold">
+                {journal.caseStudy.label}
+              </h3>
+              <p className="mt-3 font-encode text-[clamp(0.8125rem,1.5vw,17px)] font-normal leading-[1.5] tracking-normal text-zulu-text">
+                {journal.caseStudy.body}
+              </p>
+            </div>
+            <div>
+              <h3 className="text-center font-diphylleia text-[clamp(1rem,2vw,22px)] font-normal leading-[1.5] tracking-normal text-zulu-gold">
+                {journal.memo.label}
+              </h3>
+              <p className="mt-3 font-encode text-[clamp(0.8125rem,1.5vw,17px)] font-normal leading-[1.5] tracking-normal text-zulu-text">
+                {journal.memo.body}
+              </p>
+            </div>
+            <Link
+              href={journal.ctaHref}
+              className="inline-flex h-11 items-center justify-center bg-zulu-gold px-8 font-sans text-sm font-medium normal-case tracking-normal text-zulu-bg transition-colors hover:bg-zulu-gold-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zulu-gold focus-visible:ring-offset-2 focus-visible:ring-offset-zulu-bg"
+            >
+              {journal.cta}
+            </Link>
+          </div>
+        </div>
       </div>
     </SectionShell>
   );

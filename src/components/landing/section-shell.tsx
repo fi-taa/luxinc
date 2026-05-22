@@ -6,6 +6,7 @@ interface SectionShellProps {
   className?: string;
   ariaLabelledBy?: string;
   bordered?: boolean;
+  fullWidth?: boolean;
 }
 
 export function SectionShell({
@@ -14,6 +15,7 @@ export function SectionShell({
   className,
   ariaLabelledBy,
   bordered = false,
+  fullWidth = false,
 }: SectionShellProps) {
   return (
     <section
@@ -25,7 +27,12 @@ export function SectionShell({
         className
       )}
     >
-      <div className="mx-auto w-full max-w-[1280px] px-6 md:px-10 lg:px-16">
+      <div
+        className={cn(
+          "mx-auto w-full max-w-[1280px] px-6 md:px-10 lg:px-16",
+          fullWidth && "max-w-none px-0"
+        )}
+      >
         {children}
       </div>
     </section>

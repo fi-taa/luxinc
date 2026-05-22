@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import {
   Dancing_Script,
+  Encode_Sans_Semi_Expanded,
   Montserrat,
   Playfair_Display,
 } from "next/font/google";
@@ -47,6 +48,12 @@ const dancingScript = Dancing_Script({
   weight: ["400", "500", "600", "700"],
 });
 
+const encodeSansSemiExpanded = Encode_Sans_Semi_Expanded({
+  variable: "--font-encode-sans-semi-expanded",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
 export const metadata: Metadata = {
   title: "LUXINC. | Luxury Travel Architects",
   description:
@@ -61,7 +68,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${montserrat.variable} ${playfair.variable} ${dancingScript.variable} ${verietta.variable} h-full antialiased`}
+      className={`${montserrat.variable} ${playfair.variable} ${dancingScript.variable} ${verietta.variable} ${encodeSansSemiExpanded.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
