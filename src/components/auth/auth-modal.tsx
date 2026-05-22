@@ -15,34 +15,30 @@ interface AuthModalProps {
 const inputClassName =
   "h-11 w-full bg-[#333333] px-4 font-serif text-sm text-zulu-text placeholder:text-[#9a9a9a] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zulu-gold/60";
 
-function AuthImageBackground() {
+function AuthImagePanel() {
   return (
-    <>
+    <div className="relative h-full min-h-[240px] md:min-h-[520px]">
       <Image
         src={auth.image}
-        alt=""
+        alt={auth.imageAlt}
         fill
         className="object-cover"
-        sizes="(max-width: 768px) 100vw, 920px"
-        aria-hidden
+        sizes="(max-width: 768px) 100vw, 460px"
       />
       <div
-        className="pointer-events-none absolute inset-0 bg-linear-to-b from-zulu-gold/80 from-0% via-zulu-gold/45 via-40% to-transparent to-75%"
+        className="pointer-events-none absolute inset-0 bg-zulu-gold/25"
         aria-hidden
       />
-    </>
-  );
-}
-
-function AuthLogoMark() {
-  return (
-    <Image
-      src="/images/logo.png"
-      alt="Luxinc"
-      width={500}
-      height={500}
-      className="relative h-32 w-auto brightness-0 md:h-44"
-    />
+      <div className="absolute inset-0 z-10 flex items-center justify-center p-8">
+        <Image
+          src="/images/logo.png"
+          alt="Luxinc"
+          width={500}
+          height={500}
+          className="relative h-32 w-auto brightness-0 md:h-44"
+        />
+      </div>
+    </div>
   );
 }
 
@@ -62,7 +58,7 @@ function AuthFormPanel({ view, onSwitch, onClose }: AuthFormPanelProps) {
   }
 
   return (
-    <div className="relative flex h-full min-h-[400px] flex-col border-t-4 border-zulu-gold px-8 py-10 md:min-h-[520px] md:px-10 md:py-12">
+    <div className="relative flex h-full min-h-[400px] flex-col border-t-4 border-zulu-gold bg-zulu-bg px-8 py-10 md:min-h-[520px] md:px-10 md:py-12">
       <div key={view} className="auth-form-enter flex flex-1 flex-col">
         <h2
           id="auth-modal-title"
@@ -171,50 +167,40 @@ export function AuthModal({ view, onClose, onSwitch }: AuthModalProps) {
         className="relative w-full max-w-[920px] overflow-hidden"
       >
         <div className="relative hidden min-h-[520px] md:block">
-          <div className="absolute inset-0">
-            <AuthImageBackground />
-          </div>
-
           <div
             className={cn(
-              "auth-panel-swap absolute inset-y-0 z-10 w-1/2 bg-zulu-bg transition-[left] duration-500 ease-in-out",
+              "auth-panel-swap absolute inset-y-0 z-10 w-1/2 transition-[left] duration-500 ease-in-out",
               isSignIn ? "left-0" : "left-1/2"
             )}
           >
             <AuthFormPanel view={view} onSwitch={onSwitch} onClose={onClose} />
           </div>
-
           <div
             className={cn(
-              "auth-panel-swap pointer-events-none absolute inset-y-0 z-20 flex w-1/2 items-center justify-center p-8 transition-[left] duration-500 ease-in-out",
+              "auth-panel-swap absolute inset-y-0 w-1/2 transition-[left] duration-500 ease-in-out",
               isSignIn ? "left-1/2" : "left-0"
             )}
           >
-            <AuthLogoMark />
+            <AuthImagePanel />
           </div>
         </div>
 
         <div className="relative min-h-[880px] md:hidden">
-          <div className="absolute inset-0">
-            <AuthImageBackground />
-          </div>
-
           <div
             className={cn(
-              "auth-panel-swap absolute left-0 z-10 w-full bg-zulu-bg transition-[top] duration-500 ease-in-out",
+              "auth-panel-swap absolute left-0 z-10 w-full transition-[top] duration-500 ease-in-out",
               isSignIn ? "top-0" : "top-1/2"
             )}
           >
             <AuthFormPanel view={view} onSwitch={onSwitch} onClose={onClose} />
           </div>
-
           <div
             className={cn(
-              "auth-panel-swap pointer-events-none absolute left-0 z-20 flex h-1/2 w-full items-center justify-center p-8 transition-[top] duration-500 ease-in-out",
+              "auth-panel-swap absolute left-0 w-full transition-[top] duration-500 ease-in-out",
               isSignIn ? "top-1/2" : "top-0"
             )}
           >
-            <AuthLogoMark />
+            <AuthImagePanel />
           </div>
         </div>
       </div>
