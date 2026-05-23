@@ -11,19 +11,19 @@ import { SiteHeader } from "@/components/landing/site-header";
 import { TeamSection } from "@/components/landing/team-section";
 
 export default function Home() {
-  return (
-    <main className="bg-zulu-bg text-zulu-text">
-      <SiteHeader />
-      <HeroSection />
-      <CommitmentSection />
-      <DestinationsSection />
-      <CrownCollectionSection />
-      <ArchitectsSection />
-      <BlackBookSection />
-      <JournalSection />
-      <TeamSection />
-      <AddressSection />
-      <SiteFooter />
-    </main>
-  );
+	return (
+		<main className="bg-luxinc-bg text-luxinc-text">
+			<SiteHeader />
+			<HeroSection />
+			<CommitmentSection />
+			<DestinationsSection />
+			<CrownCollectionSection />
+			<ArchitectsSection />
+			<BlackBookSection />
+			<JournalSection />
+			<TeamSection />
+			<AddressSection />
+			<SiteFooter />
+		</main>
+	);
 }

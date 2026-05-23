@@ -11,7 +11,7 @@ export function DetailBackLink({ href, className }: DetailBackLinkProps) {
 		<Link
 			href={href}
 			className={cn(
-				"flex items-center gap-2 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zulu-gold focus-visible:ring-offset-2 focus-visible:ring-offset-zulu-bg",
+				"flex items-center gap-2 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold focus-visible:ring-offset-2 focus-visible:ring-offset-luxinc-bg",
 				className,
 			)}
 		>
@@ -22,8 +22,9 @@ export function DetailBackLink({ href, className }: DetailBackLinkProps) {
 				height={40}
 				className="h-7 w-auto md:h-10"
 			/>
-      <span className="font-sans text-sm font-medium uppercase leading-snug tracking-[0.12em] text-zulu-text hidden md:block hover:underline">Back</span>
- 
+			<span className="font-sans text-sm font-medium uppercase leading-snug tracking-[0.12em] text-luxinc-text hidden md:block hover:underline">
+				Back
+			</span>
 		</Link>
 	);
 }

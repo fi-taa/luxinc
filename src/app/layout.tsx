@@ -5,6 +5,9 @@ import {
   Encode_Sans_Semi_Expanded,
   Montserrat,
   Playfair_Display,
+  Diphylleia,
+  Edu_AU_VIC_WA_NT_Guides,
+  Homemade_Apple
 } from "next/font/google";
 import { AuthModalProvider } from "@/components/auth/auth-modal-provider";
 import "./globals.css";
@@ -55,6 +58,24 @@ const encodeSansSemiExpanded = Encode_Sans_Semi_Expanded({
   weight: ["400"],
 });
 
+const diphylleia = Diphylleia({
+  variable: "--font-diphylleia",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
+const eduGuides = Edu_AU_VIC_WA_NT_Guides({
+  variable: "--font-edu-guides",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
+const homemadeApple = Homemade_Apple({
+  variable: "--font-homemade-apple",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
 export const metadata: Metadata = {
   title: "LUXINC. | Luxury Travel Architects",
   description:
@@ -70,7 +91,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${montserrat.variable} ${playfair.variable} ${dancingScript.variable} ${verietta.variable} ${encodeSansSemiExpanded.variable} h-full antialiased`}
+      className={`${montserrat.variable} ${playfair.variable} ${dancingScript.variable} ${verietta.variable} ${encodeSansSemiExpanded.variable} ${diphylleia.variable} ${eduGuides.variable} ${homemadeApple.variable} h-full antialiased`}
     >
       <body
         suppressHydrationWarning
