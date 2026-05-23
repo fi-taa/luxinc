@@ -50,11 +50,11 @@ export function CrownCollectionSection() {
               <div className="absolute inset-x-0 bottom-0 flex flex-col p-5 md:p-6 lg:p-7">
                 <Link
                   href={card.href}
-                  className="font-sans text-[11px] font-medium uppercase leading-snug tracking-[0.12em] text-zulu-text transition-colors hover:text-zulu-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zulu-gold"
+                  className="font-sans text-sm font-medium uppercase leading-snug tracking-[0.12em] text-zulu-text transition-colors hover:text-zulu-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zulu-gold"
                 >
                   {card.title}
                 </Link>
-                <p className="mt-2 max-w-[28ch] font-sans text-[11px] font-normal leading-relaxed text-zulu-text/90 md:text-xs">
+                <p className="mt-2 max-w-[28ch] font-sans text-xs font-normal leading-relaxed text-zulu-text/90">
                   {card.description}
                 </p>
               </div>
