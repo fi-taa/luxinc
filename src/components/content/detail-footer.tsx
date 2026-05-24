@@ -10,21 +10,17 @@ export function DetailFooter() {
 			style={{ background: detailFooterGradient }}
 		>
 			<div className="mx-auto px-6 py-16 text-center md:px-10 md:py-24 lg:px-16">
-				<p className="font-diphylleia text-sm font-normal leading-relaxed text-luxinc-gold md:text-base">
-					<span className="text-luxinc-gold">LUXINC</span>
+				<p className="font-diphylleia text-sm font-normal leading-relaxed text-luxinc-text md:text-base">
+					<span className="tracking-wide text-luxinc-gold">LUXINC</span>
 					{" — "}
 					{footer.tagline}
 				</p>
-				<p className="mt-3 font-sans text-sm font-normal leading-relaxed text-luxinc-text/80 md:text-base">
+				<p className="mt-3 font-diphylleia text-sm font-normal leading-relaxed text-luxinc-text md:text-base">
 					{footer.locations}
 				</p>
-				<p className="mt-3 font-sans text-sm font-normal leading-relaxed md:text-base">
-					<span className="text-luxinc-gold">
-						© 2026 Luxinc Luxury Tour & Travel.
-					</span>{" "}
-					<span className="text-luxinc-text/80">
-						No public pricing. Zero data leakage.
-					</span>
+				<p className="mt-3 font-diphylleia text-sm font-normal leading-relaxed md:text-base">
+					<span className="text-luxinc-gold">{footer.copyrightLead}</span>{" "}
+					<span className="text-luxinc-text">{footer.copyrightTail}</span>
 				</p>
 			</div>
 		</footer>

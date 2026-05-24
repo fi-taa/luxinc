@@ -326,6 +326,6 @@ export const footer = {
   attribution: "— Mrs. Salmani A.",
   tagline: "Architects of the Impossible. Custodians of Discretion.",
   locations: "Addis Ababa · Dubai | Member of Elroi Investment Group",
-  copyright:
-    "© 2026 Luxinc Luxury Tour & Travel. No public pricing. Zero data leakage.",
+  copyrightLead: "© 2026 Luxinc Luxury Tour & Travel.",
+  copyrightTail: "No public pricing. Zero data leakage.",
 };
