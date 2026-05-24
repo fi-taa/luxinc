@@ -107,9 +107,9 @@ export function ConciergeChat() {
 	return (
 		<section
 			aria-labelledby="concierge-chat-heading"
-			className="flex min-h-[min(720px,calc(100vh-14rem))] flex-col border border-luxinc-gold/35 bg-luxinc-panel/30"
+			className="flex h-[min(720px,calc(100vh-14rem))] max-h-[min(720px,calc(100vh-14rem))] flex-col overflow-hidden border border-luxinc-gold/35 bg-luxinc-panel/30"
 		>
-			<header className="border-b border-luxinc-border/60 px-5 py-4 md:px-6">
+			<header className="shrink-0 border-b border-luxinc-border/60 px-5 py-4 md:px-6">
 				<h1
 					id="concierge-chat-heading"
 					className="font-sans text-base font-medium text-luxinc-text md:text-lg"
@@ -118,8 +118,13 @@ export function ConciergeChat() {
 				</h1>
 			</header>
 
-			<div className="flex flex-1 flex-col overflow-hidden">
-				<div className="flex-1 space-y-6 overflow-y-auto px-4 py-6 md:px-6">
+			<div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+				<div
+					className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-y-contain px-4 py-6 md:px-6"
+					role="log"
+					aria-live="polite"
+					aria-relevant="additions"
+				>
 					{messages.map((message) => (
 						<ChatMessage key={message.id} message={message} />
 					))}
@@ -138,14 +143,16 @@ export function ConciergeChat() {
 							</div>
 						</div>
 					) : null}
-					<div ref={messagesEndRef} />
+					<div ref={messagesEndRef} className="h-px shrink-0" aria-hidden />
 				</div>
-				<ChatComposer
-					onSendText={handleSendText}
-					onSendVoice={handleSendVoice}
-					onSendFile={handleSendFile}
-					disabled={isReplying}
-				/>
+				<div className="shrink-0">
+					<ChatComposer
+						onSendText={handleSendText}
+						onSendVoice={handleSendVoice}
+						onSendFile={handleSendFile}
+						disabled={isReplying}
+					/>
+				</div>
 			</div>
 		</section>
 	);
