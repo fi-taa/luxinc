@@ -7,7 +7,6 @@ export function HeroSection() {
 		<section
 			id="hero"
 			className="relative flex min-h-screen items-center justify-center"
-			style={{ position: "relative" }}
 			aria-label="Hero"
 		>
 			<Image
@@ -18,7 +17,6 @@ export function HeroSection() {
 				className="object-cover"
 				sizes="100vw"
 			/>
-			<div className="absolute inset-0 bg-black/50" />
 			<div className="absolute inset-0 bg-linear-to-b from-black/40 via-black/30 to-black/55" />
 			<div className="relative z-10 mx-auto flex w-full max-w-[1280px] flex-col items-center px-6 pb-20 pt-32 text-center md:px-10 md:pt-36 lg:px-16">
 				<p className="font-verietta text-[clamp(1.25rem,4vw,32px)] font-normal leading-none text-luxinc-gold">

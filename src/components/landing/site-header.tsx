@@ -67,7 +67,7 @@ export function SiteHeader({
 					className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold focus-visible:ring-offset-2 focus-visible:ring-offset-luxinc-bg"
 				>
 					<Image
-						src="/images/logo.png"
+						src="/images/logo.svg"
 						alt={site.name}
 						width={500}
 						height={500}

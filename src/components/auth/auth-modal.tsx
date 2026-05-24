@@ -31,7 +31,7 @@ function AuthImagePanel() {
 			/>
 			<div className="absolute inset-0 z-10 flex items-center justify-center p-8">
 				<Image
-					src="/images/logo.png"
+					src="/images/logo.svg"
 					alt="Luxinc"
 					width={500}
 					height={500}
