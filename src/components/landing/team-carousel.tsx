@@ -89,8 +89,13 @@ function CarouselNavButton({
 }
 
 export function TeamCarousel({ members }: TeamCarouselProps) {
-	const [activeIndex, setActiveIndex] = useState(1);
 	const count = members.length;
+	const defaultIndex = count > 1 ? Math.min(1, count - 1) : 0;
+	const [activeIndex, setActiveIndex] = useState(defaultIndex);
+
+	if (count === 0) {
+		return null;
+	}
 
 	function goPrev() {
 		setActiveIndex((index) => (index - 1 + count) % count);

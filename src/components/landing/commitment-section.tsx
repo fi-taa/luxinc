@@ -1,7 +1,10 @@
-import { commitment } from "@/lib/landing-content";
+"use client";
+
+import { useLandingContent } from "@/components/landing/landing-content-provider";
 import { SectionShell } from "./section-shell";
 
 export function CommitmentSection() {
+	const { commitment } = useLandingContent();
 	return (
 		<SectionShell ariaLabelledBy="commitment-heading">
 			<div className="flex flex-col items-center justify-center gap-5 lg:flex-row lg:items-center lg:gap-5 xl:gap-5">

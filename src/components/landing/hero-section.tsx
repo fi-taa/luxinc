@@ -1,8 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import { AuthCtaButton } from "@/components/auth/auth-cta-button";
-import { hero } from "@/lib/landing-content";
+import { useLandingContent } from "@/components/landing/landing-content-provider";
 
 export function HeroSection() {
+	const { hero } = useLandingContent();
 	return (
 		<section
 			id="hero"

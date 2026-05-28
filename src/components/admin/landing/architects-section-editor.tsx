@@ -12,108 +12,107 @@ import { AdminImageField } from "@/components/admin/forms/admin-image-field";
 import { AdminRepeater } from "@/components/admin/forms/admin-repeater";
 import { AdminStickySaveBar } from "@/components/admin/forms/admin-sticky-save-bar";
 import { useAdminForm } from "@/components/admin/forms/use-admin-form";
-import { architects } from "@/lib/landing-content";
-import type { PersonCard } from "@/lib/landing-content";
+import { saveArchitectsSection } from "@/lib/cms/save-landing";
+import { getArchitectDetailPath } from "@/lib/content-detail";
+import type { PersonCardRecord } from "@/lib/cms/types";
+import type { ArchitectsFormState } from "@/lib/cms/types";
 import { ContentArticlesPanel } from "./content-articles-panel";
 
-interface ArchitectsFormState {
-	title: string;
-	subtitle: string;
-	members: PersonCard[];
-}
-
-const initialArchitectsState: ArchitectsFormState = {
-	title: architects.title,
-	subtitle: architects.subtitle,
-	members: architects.members.map((member) => ({ ...member })),
-};
-
-export function ArchitectsSectionEditor() {
+export function ArchitectsSectionEditor({
+	initialData,
+}: {
+	initialData: ArchitectsFormState;
+}) {
 	const { data, setField, isDirty, isSaving, saveMessage, save, discard } =
-		useAdminForm(initialArchitectsState);
+		useAdminForm(initialData, { onSave: saveArchitectsSection });
 
 	return (
 		<>
 			<AdminPageHeader
 				title="Architects"
-				description="Architect cards and links to detail articles."
+				description="Landing cards from the architects table (title, subtitle, short description)."
 				previewHref="/#architects"
 			/>
 			<div className="space-y-6">
-				<AdminPanel title="Section">
-					<div className="grid gap-5 md:grid-cols-2">
-						<AdminField label="Title" htmlFor="architects-title">
-							<AdminInput
-								id="architects-title"
-								value={data.title}
-								onChange={(e) => setField("title", e.target.value)}
-							/>
-						</AdminField>
-						<AdminField label="Subtitle" htmlFor="architects-subtitle">
-							<AdminInput
-								id="architects-subtitle"
-								value={data.subtitle}
-								onChange={(e) => setField("subtitle", e.target.value)}
-							/>
-						</AdminField>
-					</div>
-				</AdminPanel>
 				<AdminPanel>
-					<AdminRepeater<PersonCard>
-						label="Architect members"
+					<AdminRepeater<PersonCardRecord>
+						label="Architect cards"
 						addLabel="Add architect"
-						emptyMessage="No architect cards yet. Add a member to show on the homepage."
+						emptyMessage="No architect cards yet."
 						items={data.members}
 						onChange={(members) => setField("members", members)}
 						createItem={() => ({
 							name: "",
 							role: "",
+							subTitle: "",
+							description: "",
 							image: "/images/a1.png",
 							imageAlt: "",
 							slug: "new-architect",
 						})}
-						getKey={(item, index) => `${item.slug}-${index}`}
+						getKey={(item, index) => item.id ?? `${item.name}-${index}`}
 						renderItem={(item, index, update) => (
 							<div className="space-y-4">
 								<AdminImageField
 									label="Portrait"
 									imageSrc={item.image}
-									imageAlt={item.imageAlt}
+									imageAlt={item.imageAlt || item.name}
 									onImageSrcChange={(value) => update({ image: value })}
 									onImageAltChange={(value) => update({ imageAlt: value })}
 								/>
 								<div className="grid gap-4 md:grid-cols-2">
-									<AdminField label="Name" htmlFor={`arch-name-${index}`}>
+									<AdminField label="Title" htmlFor={`arch-title-${index}`}>
 										<AdminInput
-											id={`arch-name-${index}`}
+											id={`arch-title-${index}`}
 											value={item.name}
 											onChange={(e) => update({ name: e.target.value })}
 										/>
 									</AdminField>
-									<AdminField label="Slug" htmlFor={`arch-slug-${index}`}>
+									<AdminField label="Subtitle" htmlFor={`arch-sub-${index}`}>
 										<AdminInput
-											id={`arch-slug-${index}`}
-											value={item.slug}
-											onChange={(e) => update({ slug: e.target.value })}
+											id={`arch-sub-${index}`}
+											value={item.subTitle ?? ""}
+											onChange={(e) => update({ subTitle: e.target.value })}
 										/>
 									</AdminField>
 									<AdminField
-										label="Role"
-										htmlFor={`arch-role-${index}`}
+										label="Short description"
+										htmlFor={`arch-short-${index}`}
 										className="md:col-span-2"
 									>
 										<AdminTextarea
-											id={`arch-role-${index}`}
+											id={`arch-short-${index}`}
 											value={item.role}
 											onChange={(e) => update({ role: e.target.value })}
 										/>
 									</AdminField>
+									<AdminField
+										label="Description"
+										htmlFor={`arch-desc-${index}`}
+										className="md:col-span-2"
+									>
+										<AdminTextarea
+											id={`arch-desc-${index}`}
+											value={item.description ?? ""}
+											onChange={(e) => update({ description: e.target.value })}
+										/>
+									</AdminField>
 								</div>
+								{item.id ? (
+									<Link
+										href={getArchitectDetailPath(item.id)}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="inline-flex font-sans text-sm text-luxinc-gold hover:text-luxinc-gold-muted"
+									>
+										View detail page →
+									</Link>
+								) : null}
 								<Link
 									href={`/admin/landing/architects/${item.slug}`}
-									className="inline-flex font-sans text-sm text-luxinc-gold hover:text-luxinc-gold-muted"
+									className="inline-flex font-sans text-sm text-luxinc-text-muted hover:text-luxinc-gold"
 								>
-									Edit detail article →
+									Edit legacy article →
 								</Link>
 							</div>
 						)}

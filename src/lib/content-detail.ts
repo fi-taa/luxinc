@@ -306,4 +306,8 @@ export function getContentDetailPath(
   return `/${category}/${slug}`;
 }
 
+export function getArchitectDetailPath(id: string): string {
+  return `/architects/${id}`;
+}
+
 export const defaultJournalSlug = "nusa-penida-bali";

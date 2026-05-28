@@ -1,7 +1,9 @@
+"use client";
+
 import Link from "next/link";
-import { architects } from "@/lib/landing-content";
 import type { PersonCard } from "@/lib/landing-content";
-import { getContentDetailPath } from "@/lib/content-detail";
+import { useLandingContent } from "@/components/landing/landing-content-provider";
+import { getArchitectDetailPath, getContentDetailPath } from "@/lib/content-detail";
 import { FillImage } from "./fill-image";
 import { SectionShell } from "./section-shell";
 import { SectionTitle } from "./section-title";
@@ -9,7 +11,9 @@ import { SectionTitle } from "./section-title";
 const columnHeight = "md:h-[min(65vh,560px)] md:flex-1";
 
 function ArchitectCard({ member }: { member: PersonCard }) {
-	const href = getContentDetailPath("architects", member.slug);
+	const href = member.id
+		? getArchitectDetailPath(member.id)
+		: getContentDetailPath("architects", member.slug);
 
 	return (
 		<Link
@@ -37,6 +41,7 @@ function ArchitectCard({ member }: { member: PersonCard }) {
 }
 
 export function ArchitectsSection() {
+	const { architects } = useLandingContent();
 	const [firstMember, ...otherMembers] = architects.members;
 
 	return (
@@ -56,9 +61,9 @@ export function ArchitectsSection() {
 					</div>
 				</div>
 
-				{otherMembers.map((member) => (
+				{otherMembers.map((member, index) => (
 					<div
-						key={member.name}
+						key={member.id ?? `${member.name}-${index}`}
 						className={`w-full max-w-[340px] md:max-w-none ${columnHeight}`}
 					>
 						<ArchitectCard member={member} />

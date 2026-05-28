@@ -1,9 +1,11 @@
+"use client";
+
 import { Lock, Mail, MessageCircle } from "lucide-react";
 import type {
 	ConfidentialContactLine,
 	OfficeLocationCard,
 } from "@/lib/landing-content";
-import { offices } from "@/lib/landing-content";
+import { useLandingContent } from "@/components/landing/landing-content-provider";
 import { FillImage } from "./fill-image";
 import { SectionShell } from "./section-shell";
 import { SectionTitle } from "./section-title";
@@ -91,6 +93,7 @@ function ContactIcon({ icon }: { icon: ConfidentialContactLine["icon"] }) {
 }
 
 function ConfidentialPanel() {
+	const { offices } = useLandingContent();
 	return (
 		<article className="flex min-h-0 flex-1 flex-col justify-center bg-[#221f1a] px-6 py-8 md:px-8 md:py-10">
 			<ul className="flex flex-col items-center gap-6 md:gap-7">
@@ -120,6 +123,7 @@ function ConfidentialPanel() {
 }
 
 export function AddressSection() {
+	const { offices } = useLandingContent();
 	return (
 		<SectionShell
 			id="contact"

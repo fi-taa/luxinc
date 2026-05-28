@@ -1,11 +1,14 @@
+"use client";
+
 import Link from "next/link";
-import { crownCollection } from "@/lib/landing-content";
+import { useLandingContent } from "@/components/landing/landing-content-provider";
 import { FillImage } from "./fill-image";
 import { SectionShell } from "./section-shell";
 import { SectionTitle } from "./section-title";
 import { cn } from "@/lib/utils";
 
 export function CrownCollectionSection() {
+	const { crownCollection } = useLandingContent();
 	return (
 		<SectionShell
 			id="crown-collection"
@@ -25,12 +28,15 @@ export function CrownCollectionSection() {
 				/>
 
 				<div className="mt-14 flex flex-col items-center gap-5 md:mt-20 md:flex-row md:items-end md:justify-center md:gap-4 lg:gap-5">
-					{crownCollection.cards.map((card) => (
+					{crownCollection.cards.map((card, index) => {
+						const isFeatured =
+							card.featured ?? (index === 1 && crownCollection.cards.length >= 2);
+						return (
 						<article
-							key={card.title}
+							key={card.id ?? `crown-card-${index}`}
 							className={cn(
 								"group relative w-full max-w-[400px] overflow-hidden",
-								card.featured
+								isFeatured
 									? "aspect-3/4 md:aspect-auto md:h-[min(72vh,640px)] md:max-w-[420px]"
 									: "aspect-4/5 md:aspect-auto md:h-[min(55vh,480px)] md:max-w-[340px]",
 							)}
@@ -41,25 +47,32 @@ export function CrownCollectionSection() {
 								alt={card.imageAlt}
 								className="transition-transform duration-500 group-hover:scale-105"
 								sizes={
-									card.featured
+									isFeatured
 										? "(max-width: 768px) 100vw, 420px"
 										: "(max-width: 768px) 100vw, 340px"
 								}
 							/>
 							<div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/25 to-transparent" />
 							<div className="absolute inset-x-0 bottom-0 flex flex-col p-5 md:p-6 lg:p-7">
-								<Link
-									href={card.href}
-									className="font-sans text-sm font-medium uppercase leading-snug tracking-[0.12em] text-luxinc-text transition-colors hover:text-luxinc-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
-								>
-									{card.title}
-								</Link>
+								{card.href && card.href !== "#" ? (
+									<Link
+										href={card.href}
+										className="font-sans text-sm font-medium uppercase leading-snug tracking-[0.12em] text-luxinc-text transition-colors hover:text-luxinc-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
+									>
+										{card.title}
+									</Link>
+								) : (
+									<h3 className="font-sans text-sm font-medium uppercase leading-snug tracking-[0.12em] text-luxinc-text">
+										{card.title}
+									</h3>
+								)}
 								<p className="mt-2 max-w-[28ch] font-sans text-xs font-normal leading-relaxed text-luxinc-text/90">
 									{card.description}
 								</p>
 							</div>
 						</article>
-					))}
+						);
+					})}
 				</div>
 			</div>
 		</SectionShell>

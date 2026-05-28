@@ -1,24 +1,30 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ContentDetailPage } from "@/components/content/content-detail-page";
+import { getContentDetailSlugs } from "@/lib/content-detail";
 import {
-  getContentDetail,
-  getContentDetailSlugs,
-} from "@/lib/content-detail";
+  fetchArchitectDetail,
+  fetchArchitectIds,
+} from "@/lib/cms/fetch-architect-detail";
+
+/** UUIDs from DB are not known at build time; always resolve on request. */
+export const dynamic = "force-dynamic";
 
 interface ArchitectDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export function generateStaticParams() {
-  return getContentDetailSlugs("architects").map((slug) => ({ slug }));
+export async function generateStaticParams() {
+  const ids = await fetchArchitectIds();
+  const source = ids.length ? ids : getContentDetailSlugs("architects");
+  return source.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
   params,
 }: ArchitectDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const detail = getContentDetail("architects", slug);
+  const detail = await fetchArchitectDetail(slug);
 
   if (!detail) {
     return { title: "The Architects | LUXINC." };
@@ -26,7 +32,9 @@ export async function generateMetadata({
 
   return {
     title: `${detail.title} | LUXINC.`,
-    description: detail.paragraphs[0]?.segments.map((s) => s.text).join("") ?? "",
+    description:
+      detail.paragraphs[0]?.segments.map((s) => s.text).join("") ??
+      detail.date,
   };
 }
 
@@ -34,7 +42,7 @@ export default async function ArchitectDetailPage({
   params,
 }: ArchitectDetailPageProps) {
   const { slug } = await params;
-  const detail = getContentDetail("architects", slug);
+  const detail = await fetchArchitectDetail(slug);
 
   if (!detail) {
     notFound();

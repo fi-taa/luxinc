@@ -10,11 +10,12 @@ import {
 import { AdminImageField } from "@/components/admin/forms/admin-image-field";
 import { AdminStickySaveBar } from "@/components/admin/forms/admin-sticky-save-bar";
 import { useAdminForm } from "@/components/admin/forms/use-admin-form";
-import { hero } from "@/lib/landing-content";
+import { saveHero } from "@/lib/cms/save-landing";
+import type { hero } from "@/lib/landing-content";
 
-export function HeroEditor() {
+export function HeroEditor({ initialData }: { initialData: typeof hero }) {
 	const { data, setField, isDirty, isSaving, saveMessage, save, discard } =
-		useAdminForm({ ...hero });
+		useAdminForm(initialData, { onSave: saveHero });
 
 	return (
 		<>

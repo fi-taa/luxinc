@@ -1,11 +1,14 @@
+"use client";
+
 import Image from "next/image";
-import { footer } from "@/lib/landing-content";
+import { useLandingContent } from "@/components/landing/landing-content-provider";
 
 interface SiteFooterProps {
 	showQuote?: boolean;
 }
 
 export function SiteFooter({ showQuote = true }: SiteFooterProps) {
+	const { footer } = useLandingContent();
 	return (
 		<footer>
 			{showQuote ? (

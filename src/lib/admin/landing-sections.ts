@@ -102,6 +102,15 @@ export const landingSections: LandingSectionMeta[] = [
 		lastUpdated: "May 1, 2026",
 	},
 	{
+		id: "feedback",
+		name: "Client feedback",
+		description: "Testimonials in the quote block above the footer.",
+		href: "/admin/landing/feedback",
+		previewHref: "/",
+		status: "published",
+		lastUpdated: "May 28, 2026",
+	},
+	{
 		id: "footer",
 		name: "Footer",
 		description: "Tagline, locations, and legal copy.",

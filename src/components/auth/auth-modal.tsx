@@ -1,9 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { FormEvent, useEffect } from "react";
+import { FormEvent, useMemo, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { auth } from "@/lib/landing-content";
 import { cn } from "@/lib/utils";
+import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
+import { useAppDispatch } from "@/store/hooks";
+import { loadProfile } from "@/store/slices/auth-slice";
 import type { AuthModalView } from "./auth-modal-provider";
 
 interface AuthModalProps {
@@ -51,10 +55,81 @@ interface AuthFormPanelProps {
 function AuthFormPanel({ view, onSwitch, onClose }: AuthFormPanelProps) {
 	const isSignIn = view === "sign-in";
 	const copy = isSignIn ? auth.signIn : auth.signUp;
+	const router = useRouter();
+	const dispatch = useAppDispatch();
+	const supabase = useMemo(() => getSupabaseBrowserClient(), []);
+	const [submitting, setSubmitting] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
-	function handleSubmit(event: FormEvent<HTMLFormElement>) {
+	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
-		onClose();
+		setError(null);
+		setSubmitting(true);
+
+		try {
+			const formData = new FormData(event.currentTarget);
+			const email = String(formData.get("email") ?? "").trim();
+			const password = String(formData.get("password") ?? "");
+
+			if (!email || !password) {
+				setError("Please provide email and password.");
+				return;
+			}
+
+			if (isSignIn) {
+				const { data, error: signInError } =
+					await supabase.auth.signInWithPassword({
+						email,
+						password,
+					});
+				if (signInError) throw signInError;
+
+				const userId = data.user?.id ?? null;
+				if (userId) {
+					const profile = await dispatch(loadProfile({ userId })).unwrap();
+					onClose();
+					router.push(profile?.role === "admin" ? "/admin" : "/member");
+				} else {
+					onClose();
+				}
+			} else {
+				const fullName = String(formData.get("fullName") ?? "").trim();
+				const confirmPassword = String(formData.get("confirmPassword") ?? "");
+
+				if (!fullName) {
+					setError("Please provide your full name.");
+					return;
+				}
+				if (password !== confirmPassword) {
+					setError("Passwords do not match.");
+					return;
+				}
+
+				const { data, error: signUpError } = await supabase.auth.signUp({
+					email,
+					password,
+					options: {
+						data: {
+							full_name: fullName,
+						},
+					},
+				});
+				if (signUpError) throw signUpError;
+
+				// If email confirmations are enabled, session may be null.
+				const userId = data.user?.id ?? null;
+				if (userId) {
+					void dispatch(loadProfile({ userId }));
+				}
+				onClose();
+				router.push("/member");
+			}
+		} catch (e) {
+			const message = e instanceof Error ? e.message : "Authentication failed";
+			setError(message);
+		} finally {
+			setSubmitting(false);
+		}
 	}
 
 	return (
@@ -113,10 +188,14 @@ function AuthFormPanel({ view, onSwitch, onClose }: AuthFormPanelProps) {
 
 					<button
 						type="submit"
+						disabled={submitting}
 						className="mt-4 h-12 w-full bg-luxinc-gold font-serif text-base font-normal text-luxinc-bg transition-colors hover:bg-luxinc-gold-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold focus-visible:ring-offset-2 focus-visible:ring-offset-luxinc-bg"
 					>
-						{copy.submitLabel}
+						{submitting ? "Please wait…" : copy.submitLabel}
 					</button>
+					{error ? (
+						<p className="mt-2 font-serif text-sm text-red-400">{error}</p>
+					) : null}
 				</form>
 
 				<p className="mt-8 font-serif text-sm text-luxinc-text/80">

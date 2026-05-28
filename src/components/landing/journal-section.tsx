@@ -1,11 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { journal } from "@/lib/landing-content";
+import { useLandingContent } from "@/components/landing/landing-content-provider";
 import { JournalGeometricPattern } from "./journal-geometric-pattern";
 import { SectionShell } from "./section-shell";
 import { SectionTitle } from "./section-title";
 
 export function JournalSection() {
+	const { journal } = useLandingContent();
 	return (
 		<SectionShell
 			id="journal"
@@ -41,28 +44,20 @@ export function JournalSection() {
 				<div className="relative flex min-h-[400px] flex-col justify-center overflow-visible px-6 py-10 md:px-10 lg:w-1/2 lg:shrink-0 lg:py-0 lg:pl-8 lg:pr-10 xl:pl-10 xl:pr-12">
 					<JournalGeometricPattern />
 					<div className="relative z-10 w-full max-w-2xl space-y-8 lg:max-w-none lg:space-y-10">
-						<Link
-							href={journal.caseStudyHref}
-							className="block transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold focus-visible:ring-offset-2 focus-visible:ring-offset-luxinc-bg"
-						>
-							<h3 className="text-center font-diphylleia text-[clamp(1rem,2vw,22px)] font-normal leading-normal tracking-normal text-luxinc-gold">
-								{journal.caseStudy.label}
-							</h3>
-							<p className="mt-3 font-encode text-[clamp(0.8125rem,1.5vw,17px)] font-normal leading-normal tracking-normal text-luxinc-text">
-								{journal.caseStudy.body}
-							</p>
-						</Link>
-						<Link
-							href={journal.memoHref}
-							className="block transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold focus-visible:ring-offset-2 focus-visible:ring-offset-luxinc-bg"
-						>
-							<h3 className="text-center font-diphylleia text-[clamp(1rem,2vw,22px)] font-normal leading-normal tracking-normal text-luxinc-gold">
-								{journal.memo.label}
-							</h3>
-							<p className="mt-3 font-encode text-[clamp(0.8125rem,1.5vw,17px)] font-normal leading-normal tracking-normal text-luxinc-text">
-								{journal.memo.body}
-							</p>
-						</Link>
+						{journal.highlights.map((item) => (
+							<Link
+								key={item.href}
+								href={item.href}
+								className="block transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold focus-visible:ring-offset-2 focus-visible:ring-offset-luxinc-bg"
+							>
+								<h3 className="text-center font-diphylleia text-[clamp(1rem,2vw,22px)] font-normal leading-normal tracking-normal text-luxinc-gold">
+									{item.label}
+								</h3>
+								<p className="mt-3 font-encode text-[clamp(0.8125rem,1.5vw,17px)] font-normal leading-normal tracking-normal text-luxinc-text">
+									{item.body}
+								</p>
+							</Link>
+						))}
 						<Link
 							href={journal.ctaHref}
 							className="inline-flex h-11 items-center justify-center bg-luxinc-gold px-8 font-sans text-sm font-medium normal-case tracking-normal text-luxinc-bg transition-colors hover:bg-luxinc-gold-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold focus-visible:ring-offset-2 focus-visible:ring-offset-luxinc-bg"

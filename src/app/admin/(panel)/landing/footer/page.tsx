@@ -1,5 +1,7 @@
 import { FooterEditor } from "@/components/admin/landing/footer-editor";
+import { fetchFooter } from "@/lib/cms/fetch-landing";
 
-export default function AdminFooterPage() {
-	return <FooterEditor />;
+export default async function AdminFooterPage() {
+	const initialData = await fetchFooter();
+	return <FooterEditor initialData={initialData} />;
 }

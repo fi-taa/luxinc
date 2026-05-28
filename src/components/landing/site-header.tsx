@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { hero, navLinks, site } from "@/lib/landing-content";
 import type { NavLink } from "@/lib/landing-content";
+import { useLandingContent } from "@/components/landing/landing-content-provider";
 import { AuthCtaButton } from "@/components/auth/auth-cta-button";
 import { GoldButton } from "./gold-button";
 import { MobileNav } from "./mobile-nav";
@@ -38,8 +38,8 @@ function resolveNavLinks(
 	});
 }
 
-function ctaActionForLabel(label: string): "sign-in" | "sign-up" {
-	return label === hero.cta ? "sign-up" : "sign-in";
+function ctaActionForLabel(label: string, heroCta: string): "sign-in" | "sign-up" {
+	return label === heroCta ? "sign-up" : "sign-in";
 }
 
 export function SiteHeader({
@@ -47,6 +47,7 @@ export function SiteHeader({
 	activeHref,
 	cta,
 }: SiteHeaderProps) {
+	const { site, navLinks, hero } = useLandingContent();
 	const isPage = variant === "page";
 	const resolvedLinks = resolveNavLinks(navLinks, isPage, activeHref);
 	const headerCta = cta ?? site.navCta;
@@ -55,7 +56,7 @@ export function SiteHeader({
 		href: resolveNavHref(hero.ctaHref, isPage),
 	};
 	const displayCta = isPage && !cta ? defaultDetailCta : headerCta;
-	const ctaAction = ctaActionForLabel(displayCta.label);
+	const ctaAction = ctaActionForLabel(displayCta.label, hero.cta);
 
 	return (
 		<header

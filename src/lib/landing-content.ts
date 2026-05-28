@@ -14,7 +14,11 @@ export interface DestinationCard {
 }
 
 export interface DestinationSlide {
+  id?: string;
+  /** Primary image (first in `images`) */
   image: string;
+  /** All carousel images for this destination */
+  images?: string[];
   imageAlt: string;
   headline: string;
   subtitle: string;
@@ -22,6 +26,7 @@ export interface DestinationSlide {
 }
 
 export interface ExperienceCard {
+  id?: string;
   title: string;
   description: string;
   image: string;
@@ -31,8 +36,11 @@ export interface ExperienceCard {
 }
 
 export interface PersonCard {
+  id?: string;
   name: string;
   role: string;
+  subTitle?: string;
+  description?: string;
   image: string;
   imageAlt: string;
   slug: string;
@@ -126,6 +134,7 @@ export const destinations = {
   slides: [
     {
       image: "/images/sd2.png",
+      images: ["/images/sd2.png"],
       imageAlt: "Ethiopia landscape with palm trees and city skyline",
       headline: "Signature Destination",
       subtitle: "Sacred Origins",
@@ -134,6 +143,7 @@ export const destinations = {
     },
     {
       image: "/images/sd3.png",
+      images: ["/images/sd3.png"],
       imageAlt: "Giraffes with Kilimanjaro in the background",
       headline: "Addis Ababa",
       subtitle: "The Untamed Covenant",
@@ -142,6 +152,7 @@ export const destinations = {
     },
     {
       image: "/images/sd4.png",
+      images: ["/images/sd4.png"],
       imageAlt: "Tropical beach with turquoise water",
       headline: "Rwanda",
       subtitle: "Crater & Coast",
@@ -150,13 +161,14 @@ export const destinations = {
     },
     {
       image: "/images/sd5.png",
+      images: ["/images/sd5.png"],
       imageAlt: "World landmarks and private aviation",
       headline: "Global",
       subtitle: "Beyond Africa",
       description:
         "Maldives private atolls, Japanese ryokan buyouts, Tuscan villa & helicopter fleet.",
     },
-  ] satisfies DestinationSlide[],
+  ] as DestinationSlide[],
 };
 
 export const crownCollection = {
@@ -188,7 +200,7 @@ export const crownCollection = {
       imageAlt: "Tropical beach with overwater bungalows and palm trees",
       href: "#",
     },
-  ] satisfies ExperienceCard[],
+  ] as ExperienceCard[],
 };
 
 export const architects = {
@@ -216,7 +228,7 @@ export const architects = {
       imageAlt: "Elroi branding on black background",
       slug: "elroi-backing",
     },
-  ] satisfies PersonCard[],
+  ] as PersonCard[],
 };
 
 export const blackBook = {
@@ -227,24 +239,32 @@ export const blackBook = {
   buttonLabel: "Send",
 };
 
+export type JournalHighlight = {
+  label: string;
+  body: string;
+  href: string;
+};
+
 export const journal = {
   title: "Journal",
   subtitle: "The Concierge Memo",
   collageImage: "/images/j.png",
   collageAlt:
     "Journal collage featuring Taj Mahal, Ethiopia travel, and Santorini destinations",
-  caseStudy: {
-    label: "CASE STUDY",
-    body: "Private dinner inside a closed Mughal fort / \"72-hour orchestration: antiques, original frescoes, a 12-course heritage meal.\"",
-  },
-  memo: {
-    label: "THE MEMO",
-    body: "3 impossible requests fulfilled last month / Helicopter ski on Kilimanjaro, last-minute gorilla naming, private jet diversion for aurora.",
-  },
   cta: "View More →",
   ctaHref: "/journal/nusa-penida-bali",
-  caseStudyHref: "/journal/mughal-fort-case-study",
-  memoHref: "/journal/concierge-memo",
+  highlights: [
+    {
+      label: "CASE STUDY",
+      body: 'Private dinner inside a closed Mughal fort / "72-hour orchestration: antiques, original frescoes, a 12-course heritage meal."',
+      href: "/journal/mughal-fort-case-study",
+    },
+    {
+      label: "THE MEMO",
+      body: "3 impossible requests fulfilled last month / Helicopter ski on Kilimanjaro, last-minute gorilla naming, private jet diversion for aurora.",
+      href: "/journal/concierge-memo",
+    },
+  ] satisfies JournalHighlight[],
 };
 
 export const team = {
@@ -272,7 +292,7 @@ export const team = {
       imageAlt: "Tropical beach with overwater bungalows and palm trees",
       slug: "elroi-backing",
     },
-  ] satisfies PersonCard[],
+  ] as PersonCard[],
 };
 
 export const offices = {
@@ -320,10 +340,25 @@ export const offices = {
   },
 };
 
+export type FeedbackItem = {
+  id?: string;
+  fullName: string;
+  description: string;
+  featured: boolean;
+};
+
+export const feedback = [
+  {
+    fullName: "Mrs. Salmani A.",
+    description:
+      "Flawless from takeoff to landing – they turned an impossible dream into a seamless narrative.",
+    featured: true,
+  },
+] satisfies FeedbackItem[];
+
 export const footer = {
-  quote:
-    "Flawless from takeoff to landing – they turned an impossible dream into a seamless narrative.",
-  attribution: "— Mrs. Salmani A.",
+  quote: feedback[0].description,
+  attribution: `— ${feedback[0].fullName}`,
   tagline: "Architects of the Impossible. Custodians of Discretion.",
   locations: "Addis Ababa · Dubai | Member of Elroi Investment Group",
   copyrightLead: "© 2026 Luxinc Luxury Tour & Travel.",

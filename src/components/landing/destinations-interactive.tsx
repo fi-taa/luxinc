@@ -1,6 +1,6 @@
 "use client";
 
-import { destinations } from "@/lib/landing-content";
+import { useLandingContent } from "@/components/landing/landing-content-provider";
 import { DestinationCarousel } from "./destination-carousel";
 import { FillImage } from "./fill-image";
 import Image from "next/image";
@@ -8,6 +8,7 @@ import Image from "next/image";
 const BOTTOM_INITIAL_INDICES = [1, 2, 3] as const;
 
 export function DestinationsInteractive() {
+	const { destinations } = useLandingContent();
 	const { slides, titleImage, titleImageAlt } = destinations;
 
 	return (
@@ -50,8 +51,9 @@ export function DestinationsInteractive() {
 					return (
 						<DestinationCarousel
 							key={`destination-carousel-${initialIndex}`}
-							slides={slides}
-							initialIndex={initialIndex}
+							slides={[slide]}
+							initialIndex={0}
+							lockToInitialSlide
 							fixedHeadline={slide.headline}
 							aspectClassName="aspect-4/3 w-full"
 							imageSizes="(max-width: 768px) 100vw, 33vw"

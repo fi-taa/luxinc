@@ -11,56 +11,26 @@ import { AdminImageField } from "@/components/admin/forms/admin-image-field";
 import { AdminRepeater } from "@/components/admin/forms/admin-repeater";
 import { AdminStickySaveBar } from "@/components/admin/forms/admin-sticky-save-bar";
 import { useAdminForm } from "@/components/admin/forms/use-admin-form";
-import { team } from "@/lib/landing-content";
-import type { PersonCard } from "@/lib/landing-content";
+import { saveTeamSection } from "@/lib/cms/save-landing";
+import type { PersonCardRecord, TeamFormState } from "@/lib/cms/types";
 
-interface TeamFormState {
-	title: string;
-	subtitle: string;
-	members: PersonCard[];
-}
-
-const initialTeamState: TeamFormState = {
-	title: team.title,
-	subtitle: team.subtitle,
-	members: team.members.map((member) => ({ ...member })),
-};
-
-export function TeamEditor() {
+export function TeamEditor({ initialData }: { initialData: TeamFormState }) {
 	const { data, setField, isDirty, isSaving, saveMessage, save, discard } =
-		useAdminForm(initialTeamState);
+		useAdminForm(initialData, { onSave: saveTeamSection });
 
 	return (
 		<>
 			<AdminPageHeader
 				title="Team"
-				description="Meet the team carousel."
-				previewHref="/"
+				description="Team carousel from public.teams (avatar_url, full_name, description)."
+				previewHref="/#team"
 			/>
 			<div className="space-y-6">
-				<AdminPanel title="Section">
-					<div className="grid gap-5 md:grid-cols-2">
-						<AdminField label="Title" htmlFor="team-title">
-							<AdminInput
-								id="team-title"
-								value={data.title}
-								onChange={(e) => setField("title", e.target.value)}
-							/>
-						</AdminField>
-						<AdminField label="Subtitle" htmlFor="team-subtitle">
-							<AdminInput
-								id="team-subtitle"
-								value={data.subtitle}
-								onChange={(e) => setField("subtitle", e.target.value)}
-							/>
-						</AdminField>
-					</div>
-				</AdminPanel>
 				<AdminPanel>
-					<AdminRepeater<PersonCard>
+					<AdminRepeater<PersonCardRecord>
 						label="Team members"
 						addLabel="Add team member"
-						emptyMessage="No team members in the carousel."
+						emptyMessage="No team members yet."
 						items={data.members}
 						onChange={(members) => setField("members", members)}
 						createItem={() => ({
@@ -70,13 +40,13 @@ export function TeamEditor() {
 							imageAlt: "",
 							slug: "",
 						})}
-						getKey={(item, index) => `${item.name}-${index}`}
+						getKey={(item, index) => item.id ?? `${item.name}-${index}`}
 						renderItem={(item, index, update) => (
 							<div className="space-y-4">
 								<AdminImageField
-									label="Photo"
+									label="Avatar"
 									imageSrc={item.image}
-									imageAlt={item.imageAlt}
+									imageAlt={item.imageAlt || item.name}
 									onImageSrcChange={(value) => update({ image: value })}
 									onImageAltChange={(value) => update({ imageAlt: value })}
 								/>
@@ -88,9 +58,13 @@ export function TeamEditor() {
 											onChange={(e) => update({ name: e.target.value })}
 										/>
 									</AdminField>
-									<AdminField label="Role" htmlFor={`team-role-${index}`} className="md:col-span-2">
+									<AdminField
+										label="Description"
+										htmlFor={`team-desc-${index}`}
+										className="md:col-span-2"
+									>
 										<AdminTextarea
-											id={`team-role-${index}`}
+											id={`team-desc-${index}`}
 											value={item.role}
 											onChange={(e) => update({ role: e.target.value })}
 										/>

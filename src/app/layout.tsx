@@ -10,6 +10,7 @@ import {
   Homemade_Apple
 } from "next/font/google";
 import { AuthModalProvider } from "@/components/auth/auth-modal-provider";
+import { AppProviders } from "./providers";
 import "./globals.css";
 
 const verietta = localFont({
@@ -97,7 +98,9 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-full flex flex-col"
       >
-        <AuthModalProvider>{children}</AuthModalProvider>
+        <AppProviders>
+          <AuthModalProvider>{children}</AuthModalProvider>
+        </AppProviders>
       </body>
     </html>
   );

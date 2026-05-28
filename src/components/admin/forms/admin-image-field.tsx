@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useId, useState } from "react";
 import { AdminField, AdminInput } from "./admin-field";
+import { resolveStorageImageUrl } from "@/lib/supabase/storage-url";
 
 interface AdminImageFieldProps {
 	label: string;
@@ -22,7 +23,10 @@ export function AdminImageField({
 	const fileId = useId();
 	const pathId = useId();
 	const altId = useId();
-	const [previewSrc, setPreviewSrc] = useState(imageSrc);
+	const [previewSrc, setPreviewSrc] = useState(() =>
+		resolveStorageImageUrl(imageSrc),
+	);
+	const displaySrc = resolveStorageImageUrl(previewSrc || imageSrc);
 
 	function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const file = event.target.files?.[0];
@@ -39,12 +43,12 @@ export function AdminImageField({
 		<AdminField label={label} htmlFor={pathId}>
 			<div className="flex flex-col gap-4 sm:flex-row">
 				<div className="relative h-32 w-full shrink-0 overflow-hidden rounded-md border border-luxinc-border bg-black sm:w-48">
-					{previewSrc || imageSrc ? (
+					{displaySrc ? (
 						<Image
-							src={previewSrc || imageSrc}
+							src={displaySrc}
 							alt={imageAlt || ""}
 							fill
-							unoptimized={(previewSrc || imageSrc).startsWith("blob:")}
+							unoptimized={displaySrc.startsWith("blob:")}
 							className="object-cover"
 							sizes="192px"
 						/>
@@ -74,8 +78,9 @@ export function AdminImageField({
 						id={pathId}
 						value={imageSrc.startsWith("blob:") ? "" : imageSrc}
 						onChange={(e) => {
-							setPreviewSrc(e.target.value);
-							onImageSrcChange(e.target.value);
+							const value = resolveStorageImageUrl(e.target.value);
+							setPreviewSrc(value);
+							onImageSrcChange(value);
 						}}
 						placeholder="/images/example.png"
 					/>

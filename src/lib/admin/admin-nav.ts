@@ -38,6 +38,7 @@ export const adminNavGroups: AdminNavGroup[] = [
 			{ label: "Team", href: "/admin/landing/team" },
 			{ label: "Black Book", href: "/admin/landing/black-book" },
 			{ label: "Contact", href: "/admin/landing/contact" },
+			{ label: "Client feedback", href: "/admin/landing/feedback" },
 			{ label: "Footer", href: "/admin/landing/footer" },
 		],
 	},

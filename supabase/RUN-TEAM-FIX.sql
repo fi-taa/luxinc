@@ -1,0 +1,2 @@
+-- Copy entire file into Supabase SQL Editor → Run
+-- See fix-teams-landing.sql (same content)

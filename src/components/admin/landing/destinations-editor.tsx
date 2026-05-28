@@ -11,24 +11,17 @@ import { AdminImageField } from "@/components/admin/forms/admin-image-field";
 import { AdminRepeater } from "@/components/admin/forms/admin-repeater";
 import { AdminStickySaveBar } from "@/components/admin/forms/admin-sticky-save-bar";
 import { useAdminForm } from "@/components/admin/forms/use-admin-form";
-import { destinations } from "@/lib/landing-content";
+import { saveDestinations } from "@/lib/cms/save-landing";
 import type { DestinationSlide } from "@/lib/landing-content";
+import type { DestinationsFormState } from "@/lib/cms/types";
 
-interface DestinationsFormState {
-	titleImage: string;
-	titleImageAlt: string;
-	slides: DestinationSlide[];
-}
-
-const initialDestinationsState: DestinationsFormState = {
-	titleImage: destinations.titleImage,
-	titleImageAlt: destinations.titleImageAlt,
-	slides: destinations.slides.map((slide) => ({ ...slide })),
-};
-
-export function DestinationsEditor() {
+export function DestinationsEditor({
+	initialData,
+}: {
+	initialData: DestinationsFormState;
+}) {
 	const { data, setField, isDirty, isSaving, saveMessage, save, discard } =
-		useAdminForm(initialDestinationsState);
+		useAdminForm(initialData, { onSave: saveDestinations });
 
 	return (
 		<>
@@ -38,41 +31,59 @@ export function DestinationsEditor() {
 				previewHref="/#destinations"
 			/>
 			<div className="space-y-6">
-				<AdminPanel title="Title image">
-					<AdminImageField
-						label="Featured image"
-						imageSrc={data.titleImage}
-						imageAlt={data.titleImageAlt}
-						onImageSrcChange={(value) => setField("titleImage", value)}
-						onImageAltChange={(value) => setField("titleImageAlt", value)}
-					/>
-				</AdminPanel>
 				<AdminPanel>
-					<AdminRepeater<DestinationSlide>
-						label="Carousel slides"
-						addLabel="Add slide"
-						emptyMessage="No destination slides. Add your first carousel slide."
+					<AdminRepeater<DestinationSlide & { id?: string }>
+						label="Destinations"
+						addLabel="Add destination"
+						emptyMessage="No destinations yet. Add your first destination."
 						items={data.slides}
 						onChange={(slides) => setField("slides", slides)}
 						createItem={() => ({
-							image: "/images/sd.png",
+							image: "/images/sd2.png",
+							images: ["/images/sd2.png"],
 							imageAlt: "",
 							headline: "",
 							subtitle: "",
 							description: "",
 						})}
-						getKey={(item, index) => `${item.headline}-${index}`}
+						getKey={(item, index) => item.id ?? `${item.headline}-${index}`}
 						renderItem={(item, index, update) => (
 							<div className="space-y-4">
 								<AdminImageField
-									label="Slide image"
+									label="Primary image"
 									imageSrc={item.image}
 									imageAlt={item.imageAlt}
-									onImageSrcChange={(value) => update({ image: value })}
+									onImageSrcChange={(value) => {
+										const images = item.images?.length
+											? [value, ...item.images.slice(1)]
+											: [value];
+										update({ image: value, images });
+									}}
 									onImageAltChange={(value) => update({ imageAlt: value })}
 								/>
+								<AdminField
+									label="Additional image URLs (one per line)"
+									htmlFor={`slide-images-${index}`}
+									className="md:col-span-2"
+								>
+									<AdminTextarea
+										id={`slide-images-${index}`}
+										value={(item.images ?? [item.image]).filter(Boolean).join("\n")}
+										onChange={(e) => {
+											const urls = e.target.value
+												.split("\n")
+												.map((line) => line.trim())
+												.filter(Boolean);
+											update({
+												images: urls,
+												image: urls[0] ?? "",
+											});
+										}}
+										rows={3}
+									/>
+								</AdminField>
 								<div className="grid gap-4 md:grid-cols-2">
-									<AdminField label="Headline" htmlFor={`slide-headline-${index}`}>
+									<AdminField label="Title" htmlFor={`slide-headline-${index}`}>
 										<AdminInput
 											id={`slide-headline-${index}`}
 											value={item.headline}

@@ -10,58 +10,34 @@ import {
 import { AdminImageField } from "@/components/admin/forms/admin-image-field";
 import { AdminRepeater } from "@/components/admin/forms/admin-repeater";
 import { AdminStickySaveBar } from "@/components/admin/forms/admin-sticky-save-bar";
-import { AdminToggle } from "@/components/admin/forms/admin-toggle";
 import { useAdminForm } from "@/components/admin/forms/use-admin-form";
-import { crownCollection } from "@/lib/landing-content";
-import type { ExperienceCard } from "@/lib/landing-content";
+import { saveCrownCollection } from "@/lib/cms/save-landing";
+import type {
+	CrownCollectionFormState,
+	ExperienceCardRecord,
+} from "@/lib/cms/types";
 
-interface CrownCollectionFormState {
-	title: string;
-	subtitle: string;
-	cards: ExperienceCard[];
-}
-
-const initialCrownState: CrownCollectionFormState = {
-	title: crownCollection.title,
-	subtitle: crownCollection.subtitle,
-	cards: crownCollection.cards.map((card) => ({ ...card })),
-};
-
-export function CrownCollectionEditor() {
+export function CrownCollectionEditor({
+	initialData,
+}: {
+	initialData: CrownCollectionFormState;
+}) {
 	const { data, setField, isDirty, isSaving, saveMessage, save, discard } =
-		useAdminForm(initialCrownState);
+		useAdminForm(initialData, { onSave: saveCrownCollection });
 
 	return (
 		<>
 			<AdminPageHeader
 				title="Crown Collection"
-				description="Featured experience cards."
+				description="Featured experiences from the crown_collections table."
 				previewHref="/#crown-collection"
 			/>
 			<div className="space-y-6">
-				<AdminPanel title="Section">
-					<div className="grid gap-5 md:grid-cols-2">
-						<AdminField label="Title" htmlFor="crown-title">
-							<AdminInput
-								id="crown-title"
-								value={data.title}
-								onChange={(e) => setField("title", e.target.value)}
-							/>
-						</AdminField>
-						<AdminField label="Subtitle" htmlFor="crown-subtitle">
-							<AdminInput
-								id="crown-subtitle"
-								value={data.subtitle}
-								onChange={(e) => setField("subtitle", e.target.value)}
-							/>
-						</AdminField>
-					</div>
-				</AdminPanel>
 				<AdminPanel>
-					<AdminRepeater<ExperienceCard>
-						label="Experience cards"
-						addLabel="Add card"
-						emptyMessage="No crown collection cards yet."
+					<AdminRepeater<ExperienceCardRecord>
+						label="Crown collection items"
+						addLabel="Add item"
+						emptyMessage="No crown collection items yet."
 						items={data.cards}
 						onChange={(cards) => setField("cards", cards)}
 						createItem={() => ({
@@ -70,50 +46,36 @@ export function CrownCollectionEditor() {
 							image: "/images/c1.png",
 							imageAlt: "",
 							href: "#",
-							featured: false,
 						})}
-						getKey={(item, index) => `${item.title}-${index}`}
+						getKey={(item, index) => item.id ?? `${item.title}-${index}`}
 						renderItem={(item, index, update) => (
 							<div className="space-y-4">
 								<AdminImageField
-									label="Card image"
+									label="Image"
 									imageSrc={item.image}
-									imageAlt={item.imageAlt}
+									imageAlt={item.imageAlt || item.title}
 									onImageSrcChange={(value) => update({ image: value })}
 									onImageAltChange={(value) => update({ imageAlt: value })}
 								/>
 								<div className="grid gap-4 md:grid-cols-2">
-									<AdminField label="Title" htmlFor={`crown-card-title-${index}`}>
+									<AdminField label="Title" htmlFor={`crown-title-${index}`}>
 										<AdminInput
-											id={`crown-card-title-${index}`}
+											id={`crown-title-${index}`}
 											value={item.title}
 											onChange={(e) => update({ title: e.target.value })}
 										/>
 									</AdminField>
-									<AdminField label="Href" htmlFor={`crown-card-href-${index}`}>
-										<AdminInput
-											id={`crown-card-href-${index}`}
-											value={item.href}
-											onChange={(e) => update({ href: e.target.value })}
-										/>
-									</AdminField>
 									<AdminField
 										label="Description"
-										htmlFor={`crown-card-desc-${index}`}
+										htmlFor={`crown-desc-${index}`}
 										className="md:col-span-2"
 									>
 										<AdminTextarea
-											id={`crown-card-desc-${index}`}
+											id={`crown-desc-${index}`}
 											value={item.description}
 											onChange={(e) => update({ description: e.target.value })}
 										/>
 									</AdminField>
-									<AdminToggle
-										id={`crown-card-featured-${index}`}
-										label="Featured card"
-										checked={Boolean(item.featured)}
-										onChange={(featured) => update({ featured })}
-									/>
 								</div>
 							</div>
 						)}

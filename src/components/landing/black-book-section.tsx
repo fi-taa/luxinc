@@ -1,5 +1,7 @@
+"use client";
+
 import Image from "next/image";
-import { blackBook } from "@/lib/landing-content";
+import { useLandingContent } from "@/components/landing/landing-content-provider";
 import { BlackBookForm } from "./black-book-form";
 import { SectionShell } from "./section-shell";
 
@@ -7,6 +9,7 @@ const blackBookGradient =
 	"linear-gradient(90deg, rgba(27, 24, 19, 0) 0%, #1B1813 53.85%, rgba(27, 24, 19, 0) 100%)";
 
 export function BlackBookSection() {
+	const { blackBook } = useLandingContent();
 	return (
 		<SectionShell
 			bordered

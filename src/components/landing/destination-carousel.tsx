@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { DestinationSlide } from "@/lib/landing-content";
 import { cn } from "@/lib/utils";
 import { FillImage } from "./fill-image";
@@ -8,39 +8,41 @@ import { FillImage } from "./fill-image";
 const AUTO_PLAY_MS = 5000;
 const TRANSITION_MS = 700;
 
-interface DestinationDotsProps {
-	slides: DestinationSlide[];
-	activeIndex: number;
-	onIndexChange: (index: number) => void;
-	fixedHeadline?: string;
+function slideImages(slide: DestinationSlide): string[] {
+	const list = slide.images?.filter(Boolean);
+	if (list?.length) return list;
+	return slide.image ? [slide.image] : [];
 }
 
-function DestinationDots({
-	slides,
-	activeIndex,
-	onIndexChange,
-	fixedHeadline,
-}: DestinationDotsProps) {
+interface DestinationImageControlsProps {
+	images: string[];
+	activeImageIndex: number;
+	onImageIndexChange: (index: number) => void;
+}
+
+function DestinationImageControls({
+	images,
+	activeImageIndex,
+	onImageIndexChange,
+}: DestinationImageControlsProps) {
+	if (images.length <= 1) return null;
+
 	return (
 		<div
-			className="absolute bottom-4 left-4 z-10 flex gap-2 md:bottom-5 md:left-5"
+			className="absolute bottom-4 left-4 z-10 flex items-center gap-2 md:bottom-5 md:left-5"
 			role="tablist"
 			aria-label="Destination images"
 		>
-			{slides.map((slide, index) => {
-				const isActive = index === activeIndex;
+			{images.map((_, index) => {
+				const isActive = index === activeImageIndex;
 				return (
 					<button
-						key={slide.image}
+						key={`image-indicator-${index}`}
 						type="button"
 						role="tab"
 						aria-selected={isActive}
-						aria-label={
-							fixedHeadline
-								? `Show ${fixedHeadline} — ${slide.subtitle}`
-								: `Show ${slide.headline}`
-						}
-						onClick={() => onIndexChange(index)}
+						aria-label={`Show image ${index + 1} of ${images.length}`}
+						onClick={() => onImageIndexChange(index)}
 						className={cn(
 							"h-3 w-3 shrink-0 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold focus-visible:ring-offset-2 focus-visible:ring-offset-luxinc-bg",
 							isActive
@@ -74,7 +76,7 @@ function DestinationCarouselCaption({
 					<span className="relative inline">
 						{slides.map((slide, index) => (
 							<span
-								key={`${slide.image}-subtitle`}
+								key={`${slide.id ?? slide.headline}-subtitle`}
 								className={cn(
 									"transition-opacity ease-in-out",
 									index === activeIndex
@@ -92,7 +94,7 @@ function DestinationCarouselCaption({
 				<div className="relative mt-2 min-h-13 md:min-h-14">
 					{slides.map((slide, index) => (
 						<p
-							key={`${slide.image}-description`}
+							key={`${slide.id ?? slide.headline}-description`}
 							className={cn(
 								"font-sans text-xs leading-relaxed text-luxinc-text-muted transition-opacity ease-in-out md:text-sm",
 								index === activeIndex
@@ -114,7 +116,7 @@ function DestinationCarouselCaption({
 		<div className="relative mt-4 min-h-21 md:min-h-23">
 			{slides.map((slide, index) => (
 				<div
-					key={slide.image}
+					key={slide.id ?? `${slide.headline}-${index}`}
 					className={cn(
 						"transition-opacity ease-in-out",
 						index === activeIndex
@@ -150,6 +152,8 @@ interface DestinationCarouselProps {
 	initialIndex?: number;
 	autoPlay?: boolean;
 	fixedHeadline?: string;
+	/** When true, only cycles images on the initial slide (single destination card). */
+	lockToInitialSlide?: boolean;
 }
 
 export function DestinationCarousel({
@@ -160,55 +164,106 @@ export function DestinationCarousel({
 	initialIndex = 0,
 	autoPlay = true,
 	fixedHeadline,
+	lockToInitialSlide = false,
 }: DestinationCarouselProps) {
 	const [activeIndex, setActiveIndex] = useState(initialIndex);
+	const [activeImageIndex, setActiveImageIndex] = useState(0);
+	const pauseAutoPlayUntil = useRef(0);
 
-	const advance = useCallback(() => {
-		setActiveIndex((current) => (current + 1) % slides.length);
-	}, [slides.length]);
+	const slideIndex = lockToInitialSlide ? initialIndex : activeIndex;
+	const activeSlide = slides[slideIndex];
+	const currentImages = activeSlide ? slideImages(activeSlide) : [];
+
+	const goToImage = useCallback((index: number) => {
+		pauseAutoPlayUntil.current = Date.now() + AUTO_PLAY_MS * 2;
+		setActiveImageIndex(index);
+	}, []);
+
+	const goToNextImage = useCallback(() => {
+		pauseAutoPlayUntil.current = Date.now() + AUTO_PLAY_MS * 2;
+		if (currentImages.length === 0) return;
+
+		if (activeImageIndex < currentImages.length - 1) {
+			setActiveImageIndex(activeImageIndex + 1);
+			return;
+		}
+
+		if (lockToInitialSlide) {
+			setActiveImageIndex(0);
+			return;
+		}
+
+		const nextSlideIdx = (slideIndex + 1) % slides.length;
+		setActiveIndex(nextSlideIdx);
+		setActiveImageIndex(0);
+	}, [
+		activeImageIndex,
+		currentImages.length,
+		lockToInitialSlide,
+		slideIndex,
+		slides.length,
+	]);
 
 	useEffect(() => {
-		if (!autoPlay || slides.length <= 1) return;
+		setActiveIndex(initialIndex);
+		setActiveImageIndex(0);
+	}, [initialIndex]);
+
+	useEffect(() => {
+		setActiveImageIndex((current) =>
+			currentImages.length === 0
+				? 0
+				: Math.min(current, currentImages.length - 1),
+		);
+	}, [slideIndex, currentImages.length]);
+
+	useEffect(() => {
+		if (!autoPlay || slides.length === 0 || currentImages.length === 0) return;
 
 		const prefersReducedMotion = window.matchMedia(
 			"(prefers-reduced-motion: reduce)",
 		).matches;
 		if (prefersReducedMotion) return;
 
-		const intervalId = window.setInterval(advance, AUTO_PLAY_MS);
+		const intervalId = window.setInterval(() => {
+			if (Date.now() < pauseAutoPlayUntil.current) return;
+			goToNextImage();
+		}, AUTO_PLAY_MS);
+
 		return () => window.clearInterval(intervalId);
-	}, [advance, autoPlay, slides.length]);
+	}, [autoPlay, currentImages.length, goToNextImage, slideIndex, slides.length]);
 
 	if (slides.length === 0) return null;
+
+	const displaySrc =
+		currentImages[activeImageIndex] ?? currentImages[0] ?? activeSlide?.image ?? "";
+
+	const captionIndex = lockToInitialSlide ? initialIndex : activeIndex;
 
 	return (
 		<div className="flex flex-col">
 			<div className={cn("relative", aspectClassName)}>
-				{slides.map((slide, index) => (
+				{displaySrc ? (
 					<FillImage
-						key={slide.image}
+						key={`${slideIndex}-${activeImageIndex}-${displaySrc}`}
 						containerClassName="absolute inset-0"
-						src={slide.image}
-						alt={slide.imageAlt}
-						className={cn(
-							"object-cover transition-opacity ease-in-out",
-							index === activeIndex ? "opacity-100" : "opacity-0",
-						)}
+						src={displaySrc}
+						alt={activeSlide?.imageAlt ?? ""}
+						className="object-cover transition-opacity ease-in-out"
 						style={{ transitionDuration: `${TRANSITION_MS}ms` }}
 						sizes={imageSizes}
-						priority={priority && index === initialIndex}
+						priority={priority && slideIndex === initialIndex}
 					/>
-				))}
-				<DestinationDots
-					slides={slides}
-					activeIndex={activeIndex}
-					onIndexChange={setActiveIndex}
-					fixedHeadline={fixedHeadline}
+				) : null}
+				<DestinationImageControls
+					images={currentImages}
+					activeImageIndex={activeImageIndex}
+					onImageIndexChange={goToImage}
 				/>
 			</div>
 			<DestinationCarouselCaption
 				slides={slides}
-				activeIndex={activeIndex}
+				activeIndex={captionIndex}
 				fixedHeadline={fixedHeadline}
 			/>
 		</div>

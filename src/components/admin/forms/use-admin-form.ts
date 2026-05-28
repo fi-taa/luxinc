@@ -1,10 +1,19 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-export function useAdminForm<T>(initialState: T) {
+interface UseAdminFormOptions<T> {
+	onSave?: (data: T) => Promise<void>;
+}
+
+export function useAdminForm<T>(initialState: T, options?: UseAdminFormOptions<T>) {
 	const [data, setData] = useState(initialState);
 	const [baseline, setBaseline] = useState(initialState);
+
+	useEffect(() => {
+		setData(initialState);
+		setBaseline(initialState);
+	}, [initialState]);
 	const [saveMessage, setSaveMessage] = useState<string | null>(null);
 	const [isSaving, setIsSaving] = useState(false);
 
@@ -25,11 +34,25 @@ export function useAdminForm<T>(initialState: T) {
 
 	const save = useCallback(async () => {
 		setIsSaving(true);
-		await new Promise((resolve) => setTimeout(resolve, 400));
-		setBaseline(data);
-		setSaveMessage("Changes saved (preview only — not persisted yet)");
-		setIsSaving(false);
-	}, [data]);
+		setSaveMessage(null);
+		try {
+			if (options?.onSave) {
+				await options.onSave(data);
+				setBaseline(data);
+				setSaveMessage("Changes saved");
+			} else {
+				await new Promise((resolve) => setTimeout(resolve, 400));
+				setBaseline(data);
+				setSaveMessage("Changes saved (preview only — not persisted yet)");
+			}
+		} catch (error) {
+			const message =
+				error instanceof Error ? error.message : "Failed to save changes";
+			setSaveMessage(message);
+		} finally {
+			setIsSaving(false);
+		}
+	}, [data, options?.onSave]);
 
 	const discard = useCallback(() => {
 		setData(baseline);

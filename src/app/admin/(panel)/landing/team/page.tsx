@@ -1,5 +1,7 @@
 import { TeamEditor } from "@/components/admin/landing/team-editor";
+import { fetchTeamForm } from "@/lib/cms/fetch-landing";
 
-export default function AdminTeamPage() {
-	return <TeamEditor />;
+export default async function AdminTeamPage() {
+	const initialData = await fetchTeamForm();
+	return <TeamEditor initialData={initialData} />;
 }

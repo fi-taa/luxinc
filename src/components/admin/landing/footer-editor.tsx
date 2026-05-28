@@ -5,52 +5,23 @@ import { AdminPanel } from "@/components/admin/admin-panel";
 import {
 	AdminField,
 	AdminInput,
-	AdminTextarea,
 } from "@/components/admin/forms/admin-field";
 import { AdminStickySaveBar } from "@/components/admin/forms/admin-sticky-save-bar";
-import { AdminToggle } from "@/components/admin/forms/admin-toggle";
 import { useAdminForm } from "@/components/admin/forms/use-admin-form";
-import { footer } from "@/lib/landing-content";
+import { saveFooterLegal, type FooterLegalFormState } from "@/lib/cms/save-landing";
 
-export function FooterEditor() {
+export function FooterEditor({ initialData }: { initialData: FooterLegalFormState }) {
 	const { data, setField, isDirty, isSaving, saveMessage, save, discard } =
-		useAdminForm({
-			...footer,
-			showQuote: true,
-		});
+		useAdminForm(initialData, { onSave: saveFooterLegal });
 
 	return (
 		<>
 			<AdminPageHeader
 				title="Footer"
-				description="Site-wide footer copy."
+				description="Legal footer copy. Client quotes are managed under Client feedback."
 				previewHref="/"
 			/>
 			<div className="space-y-6">
-				<AdminPanel title="Quote block">
-					<AdminToggle
-						id="footer-show-quote"
-						label="Show quote on marketing pages"
-						checked={data.showQuote}
-						onChange={(showQuote) => setField("showQuote", showQuote)}
-					/>
-					<div className="mt-5 grid gap-5">
-						<AdminField label="Quote" htmlFor="footer-quote">
-							<AdminTextarea
-								id="footer-quote"
-								value={data.quote}
-								onChange={(e) => setField("quote", e.target.value)}
-							/>
-						</AdminField>
-						<AdminField label="Attribution" htmlFor="footer-attribution">
-							<AdminInput
-								id="footer-attribution"
-								value={data.attribution}
-								onChange={(e) => setField("attribution", e.target.value)}
-							/>
-						</AdminField>
-					</div>
-				</AdminPanel>
 				<AdminPanel title="Legal">
 					<div className="grid gap-5">
 						<AdminField label="Tagline" htmlFor="footer-tagline">
