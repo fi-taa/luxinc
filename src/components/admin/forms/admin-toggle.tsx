@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 interface AdminToggleProps {
 	id: string;
 	label: string;
@@ -34,18 +36,18 @@ export function AdminToggle({
 				role="switch"
 				aria-checked={checked}
 				onClick={() => onChange(!checked)}
-				className={
-					checked
-						? "relative h-6 w-11 shrink-0 rounded-full bg-luxinc-gold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
-						: "relative h-6 w-11 shrink-0 rounded-full bg-white/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
-				}
+				className={cn(
+					checked ? "bg-luxinc-gold" : "bg-white/20",
+					"relative h-6 w-11 shrink-0 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold",
+				)}
 			>
-				<span
-					className={
+				<span	
+					className={cn(
 						checked
-							? "absolute top-0.5 left-0.5 size-5 translate-x-5 rounded-full bg-luxinc-bg transition-transform"
-							: "absolute top-0.5 left-0.5 size-5 rounded-full bg-luxinc-text transition-transform"
-					}
+							? "translate-x-5"
+							: "",
+						"absolute top-0.5 left-0.5 size-5 rounded-full bg-luxinc-text transition-transform",
+					)}
 				/>
 			</button>
 		</div>

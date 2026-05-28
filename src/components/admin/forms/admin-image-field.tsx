@@ -58,7 +58,7 @@ export function AdminImageField({
 					<div>
 						<label
 							htmlFor={fileId}
-							className="inline-flex h-9 cursor-pointer items-center rounded-md border border-luxinc-gold px-4 font-sans text-sm text-luxinc-gold transition-colors hover:bg-luxinc-gold/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
+							className="inline-flex h-9 cursor-pointer items-center border border-luxinc-gold px-4 font-sans text-sm text-luxinc-gold transition-colors hover:bg-luxinc-gold/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
 						>
 							Upload image
 						</label>

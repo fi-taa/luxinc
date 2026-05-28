@@ -52,7 +52,7 @@ export function AdminRepeater<T>({
 				<button
 					type="button"
 					onClick={addItem}
-					className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-luxinc-gold/40 bg-luxinc-gold/10 px-3 font-sans text-xs font-medium text-luxinc-gold transition-colors hover:border-luxinc-gold hover:bg-luxinc-gold/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
+					className="inline-flex h-8 items-center gap-1.5 border border-luxinc-gold/40 bg-luxinc-gold/10 px-3 font-sans text-xs font-medium text-luxinc-gold transition-colors hover:border-luxinc-gold hover:bg-luxinc-gold/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
 				>
 					<Plus className="size-3.5" aria-hidden />
 					{addLabel}
@@ -86,7 +86,7 @@ export function AdminRepeater<T>({
 								<button
 									type="button"
 									onClick={() => removeItem(index)}
-									className="inline-flex items-center gap-1 font-sans text-xs text-[#FF7F50] transition-colors hover:text-[#FF7F50]/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
+									className="inline-flex items-center gap-1 font-sans text-xs text-destructive transition-colors hover:text-destructive/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
 									aria-label={`Remove ${label} ${index + 1}`}
 								>
 									<Trash2 className="size-3.5" aria-hidden />

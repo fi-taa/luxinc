@@ -1,3 +1,6 @@
+import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
+
 import { AddressSection } from "@/components/landing/address-section";
 import { ArchitectsSection } from "@/components/landing/architects-section";
 import { BlackBookSection } from "@/components/landing/black-book-section";
@@ -10,7 +13,9 @@ import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
 import { TeamSection } from "@/components/landing/team-section";
 
-export default function Home() {
+export default async function Home() {
+	const supabase = createClient(await cookies());
+
 	return (
 		<main className="bg-luxinc-bg text-luxinc-text">
 			<SiteHeader />

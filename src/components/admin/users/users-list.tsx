@@ -11,6 +11,7 @@ import {
 import type { AdminUserRecord, AdminUserRole, AdminUserStatus } from "@/lib/admin/admin-users";
 import { adminUsers } from "@/lib/admin/admin-users";
 import { cn } from "@/lib/utils";
+import { GoldButton } from "@/components/landing/gold-button";
 
 export function UsersList() {
 	const [query, setQuery] = useState("");
@@ -38,12 +39,12 @@ export function UsersList() {
 				title="Users"
 				description="Manage Luxinc members and admin operators."
 				action={
-					<Link
+					<GoldButton
 						href="/admin/users/new"
-						className="inline-flex h-8 items-center justify-center rounded-sm bg-luxinc-gold px-4 font-sans text-xs font-semibold text-luxinc-bg transition-colors hover:bg-luxinc-gold-muted"
+						className="h-8 bg-luxinc-gold px-4 font-sans text-xs font-semibold text-luxinc-bg transition-colors hover:bg-luxinc-gold-muted"
 					>
 						Add user
-					</Link>
+					</GoldButton>
 				}
 			/>
 			<AdminPanel>

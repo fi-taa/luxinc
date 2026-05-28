@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+
 interface AdminStickySaveBarProps {
 	isDirty: boolean;
 	isSaving?: boolean;
@@ -28,19 +30,19 @@ export function AdminStickySaveBar({
 					)}
 				</p>
 				<div className="flex gap-3">
-					<button
+					<Button
 						type="button"
 						onClick={onDiscard}
 						disabled={!isDirty || isSaving}
-						className="inline-flex h-10 items-center justify-center rounded-md border border-luxinc-border px-5 font-sans text-sm text-luxinc-text transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold disabled:cursor-not-allowed disabled:opacity-40"
+						className="h-10 rounded-none border border-luxinc-border px-5 font-sans text-sm text-luxinc-text transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold disabled:cursor-not-allowed disabled:opacity-40"
 					>
 						Discard
-					</button>
+					</Button>
 					<button
 						type="button"
 						onClick={onSave}
 						disabled={!isDirty || isSaving}
-						className="inline-flex h-10 items-center justify-center rounded-md border border-luxinc-gold bg-luxinc-gold px-5 font-sans text-sm font-semibold text-luxinc-bg transition-colors hover:bg-luxinc-gold-muted disabled:cursor-not-allowed disabled:opacity-40"
+						className="inline-flex h-10 items-center justify-center border border-luxinc-gold bg-luxinc-gold px-5 font-sans text-sm font-semibold text-luxinc-bg transition-colors hover:bg-luxinc-gold-muted disabled:cursor-not-allowed disabled:opacity-40"
 					>
 						{isSaving ? "Saving…" : "Save changes"}
 					</button>

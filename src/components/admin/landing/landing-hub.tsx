@@ -40,7 +40,7 @@ export function LandingHub() {
 						</p>
 						<Link
 							href={section.href}
-							className="mt-4 inline-flex h-8 items-center justify-center rounded-sm border border-luxinc-border bg-[#0c0c0c] px-3 font-sans text-xs font-medium text-luxinc-text transition-colors hover:border-luxinc-gold/50 hover:text-luxinc-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
+							className="mt-4 inline-flex h-8 items-center justify-center border border-luxinc-border bg-luxinc-panel px-3 font-sans text-xs font-medium text-luxinc-text transition-colors hover:border-luxinc-gold/50 hover:text-luxinc-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
 						>
 							Edit
 						</Link>
