@@ -1,33 +1,50 @@
 import Link from "next/link";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminPanel } from "@/components/admin/admin-panel";
-import { adminUsers, getRecentSignUpCount } from "@/lib/admin/admin-users";
+import { fetchProfilesList } from "@/lib/admin/profiles";
 import { getDraftLandingSectionCount } from "@/lib/admin/landing-sections";
+import { createSupabaseAuthServerClient } from "@/lib/supabase/auth-server";
 
-export default function AdminDashboardPage() {
-	const activeMembers = adminUsers.filter(
-		(user) => user.role === "member" && user.status === "active",
-	).length;
+export default async function AdminDashboardPage() {
+	let totalUsers = 0;
+	let activeMembers = 0;
+	let recentSignUps = 0;
+
+	try {
+		const supabase = await createSupabaseAuthServerClient();
+		const users = await fetchProfilesList(supabase);
+		totalUsers = users.length;
+		activeMembers = users.filter(
+			(user) => user.role === "member" && user.status === "active",
+		).length;
+
+		const since = new Date();
+		since.setDate(since.getDate() - 7);
+		const { count } = await supabase
+			.from("profiles")
+			.select("id", { count: "exact", head: true })
+			.eq("role", "member")
+			.gte("joined_at", since.toISOString());
+		recentSignUps = count ?? 0;
+	} catch {
+		totalUsers = 0;
+		activeMembers = 0;
+		recentSignUps = 0;
+	}
+
 	const draftSections = getDraftLandingSectionCount();
 
 	const stats = [
-		{ label: "Total users", value: String(adminUsers.length) },
+		{ label: "Total users", value: String(totalUsers) },
 		{ label: "Active members", value: String(activeMembers) },
 		{ label: "Draft landing sections", value: String(draftSections) },
-		{ label: "Recent sign-ups (7d)", value: String(getRecentSignUpCount()) },
+		{ label: "Recent sign-ups (7d)", value: String(recentSignUps) },
 	];
 
 	const quickActions = [
 		{ label: "Add user", href: "/admin/users/new" },
 		{ label: "Edit hero", href: "/admin/landing/hero" },
 		{ label: "Edit destinations", href: "/admin/landing/destinations" },
-	];
-
-	const activity = [
-		"Daniel Alemayehu — upcoming itinerary updated",
-		"Hero copy saved by Admin Operator",
-		"Journal section marked as draft",
-		"Meron T. — account disabled",
 	];
 
 	return (
@@ -61,16 +78,21 @@ export default function AdminDashboardPage() {
 						))}
 					</ul>
 				</AdminPanel>
-				<AdminPanel title="Recent activity">
-					<ul className="space-y-3">
-						{activity.map((item) => (
-							<li
-								key={item}
-								className="border-b border-luxinc-border/40 pb-3 font-sans text-sm text-luxinc-text-muted last:border-0 last:pb-0"
-							>
-								{item}
-							</li>
-						))}
+				<AdminPanel title="Getting started">
+					<ul className="space-y-3 font-sans text-sm text-luxinc-text-muted">
+						<li>
+							Run{" "}
+							<code className="text-luxinc-gold">supabase/profiles-schema.sql</code>{" "}
+							if the users table is empty.
+						</li>
+						<li>
+							Promote your operator:{" "}
+							<code className="text-luxinc-gold">
+								update profiles set role = &apos;admin&apos; where email =
+								&apos;you@luxinc.com&apos;;
+							</code>
+						</li>
+						<li>Members sign in from the homepage Login modal.</li>
 					</ul>
 				</AdminPanel>
 			</div>

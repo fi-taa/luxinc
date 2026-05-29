@@ -1,8 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { SignOutButton } from "@/components/auth/sign-out-button";
 import { navLinks, site } from "@/lib/landing-content";
 import type { NavLink } from "@/lib/landing-content";
-import { memberUser } from "@/lib/member-content";
+import { resolveStorageImageUrlOrFallback } from "@/lib/supabase/storage-url";
+import { useAppSelector } from "@/store/hooks";
+import { selectAuth } from "@/store/slices/auth-slice";
 import { cn } from "@/lib/utils";
 
 interface MemberHeaderProps {
@@ -21,7 +26,10 @@ function resolveNavLinks(activeHref?: string): NavLink[] {
 }
 
 export function MemberHeader({ activeHref = "/#destinations" }: MemberHeaderProps) {
+	const { profile } = useAppSelector(selectAuth);
 	const resolvedLinks = resolveNavLinks(activeHref);
+	const displayName = profile?.full_name ?? "Member";
+	const avatarSrc = resolveStorageImageUrlOrFallback(profile?.avatar_url);
 
 	return (
 		<header className="relative z-50">
@@ -59,7 +67,7 @@ export function MemberHeader({ activeHref = "/#destinations" }: MemberHeaderProp
 				</nav>
 				<div className="flex items-center justify-end gap-3 md:gap-4">
 					<span className="hidden font-sans text-sm text-luxinc-text md:inline">
-						{memberUser.name}
+						{displayName}
 					</span>
 					<div
 						className={cn(
@@ -68,13 +76,20 @@ export function MemberHeader({ activeHref = "/#destinations" }: MemberHeaderProp
 						)}
 					>
 						<Image
-							src={memberUser.avatarSrc}
+							src={avatarSrc}
 							alt=""
 							fill
 							className="object-cover"
 							sizes="44px"
+							unoptimized={avatarSrc.startsWith("blob:")}
 						/>
 					</div>
+					<SignOutButton
+						redirectTo="/?auth=sign-in"
+						className="font-sans text-xs text-luxinc-text-muted transition-colors hover:text-luxinc-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold md:text-sm"
+					>
+						Sign out
+					</SignOutButton>
 				</div>
 			</div>
 		</header>

@@ -4,7 +4,9 @@ import {
 	conciergeAssistant,
 	type ConciergeChatMessage,
 } from "@/lib/concierge-chat-content";
-import { memberUser } from "@/lib/member-content";
+import { resolveStorageImageUrlOrFallback } from "@/lib/supabase/storage-url";
+import { useAppSelector } from "@/store/hooks";
+import { selectAuth } from "@/store/slices/auth-slice";
 import { cn } from "@/lib/utils";
 import { VoiceMessagePlayer } from "./voice-message-player";
 
@@ -24,14 +26,18 @@ function ConciergeAvatar() {
 }
 
 function UserAvatar() {
+	const { profile } = useAppSelector(selectAuth);
+	const avatarSrc = resolveStorageImageUrlOrFallback(profile?.avatar_url);
+
 	return (
 		<div className="relative size-9 shrink-0 overflow-hidden rounded-full ring-2 ring-luxinc-gold ring-offset-1 ring-offset-luxinc-bg">
 			<Image
-				src={memberUser.avatarSrc}
+				src={avatarSrc}
 				alt=""
 				fill
 				className="object-cover"
 				sizes="36px"
+				unoptimized={avatarSrc.startsWith("blob:")}
 			/>
 		</div>
 	);
@@ -66,7 +72,7 @@ function MessageMeta({
 function FileMessage({ message }: { message: ConciergeChatMessage }) {
 	const isImage = message.fileMimeType?.startsWith("image/");
 
-	if (isImage && message.fileUrl) {
+	if (isImage && message.fileUrl?.trim()) {
 		return (
 			<figure className="max-w-xs">
 				<Image

@@ -59,6 +59,12 @@ export function useAdminForm<T>(initialState: T, options?: UseAdminFormOptions<T
 		setSaveMessage(null);
 	}, [baseline]);
 
+	const commit = useCallback((message?: string) => {
+		setBaseline(data);
+		setSaveMessage(message ?? "Changes saved");
+		setIsSaving(false);
+	}, [data]);
+
 	return {
 		data,
 		setData,
@@ -69,5 +75,6 @@ export function useAdminForm<T>(initialState: T, options?: UseAdminFormOptions<T
 		saveMessage,
 		save,
 		discard,
+		commit,
 	};
 }

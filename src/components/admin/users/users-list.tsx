@@ -1,26 +1,51 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminPanel } from "@/components/admin/admin-panel";
 import {
 	AdminInput,
 	AdminSelect,
 } from "@/components/admin/forms/admin-field";
-import type { AdminUserRecord, AdminUserRole, AdminUserStatus } from "@/lib/admin/admin-users";
-import { adminUsers } from "@/lib/admin/admin-users";
+import type { ProfileListItem } from "@/lib/admin/profiles";
+import { fetchProfilesList } from "@/lib/admin/profiles";
+import type { AdminUserRole, AdminUserStatus } from "@/lib/admin/admin-users";
 import { cn } from "@/lib/utils";
 
-export function UsersList() {
+interface UsersListProps {
+	initialUsers: ProfileListItem[];
+}
+
+export function UsersList({ initialUsers }: UsersListProps) {
+	const [users, setUsers] = useState(initialUsers);
+	const [loadError, setLoadError] = useState<string | null>(null);
 	const [query, setQuery] = useState("");
 	const [roleFilter, setRoleFilter] = useState<AdminUserRole | "all">("all");
 	const [statusFilter, setStatusFilter] = useState<AdminUserStatus | "all">(
 		"all",
 	);
 
+	useEffect(() => {
+		let cancelled = false;
+		fetchProfilesList()
+			.then((rows) => {
+				if (!cancelled) setUsers(rows);
+			})
+			.catch((error: unknown) => {
+				if (!cancelled) {
+					setLoadError(
+						error instanceof Error ? error.message : "Failed to load users",
+					);
+				}
+			});
+		return () => {
+			cancelled = true;
+		};
+	}, []);
+
 	const filtered = useMemo(() => {
-		return adminUsers.filter((user) => {
+		return users.filter((user) => {
 			const matchesQuery =
 				query.trim() === "" ||
 				user.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -30,13 +55,13 @@ export function UsersList() {
 				statusFilter === "all" || user.status === statusFilter;
 			return matchesQuery && matchesRole && matchesStatus;
 		});
-	}, [query, roleFilter, statusFilter]);
+	}, [users, query, roleFilter, statusFilter]);
 
 	return (
 		<>
 			<AdminPageHeader
 				title="Users"
-				description="Manage Luxinc members and admin operators."
+				description="Manage Luxinc members and admin operators from Supabase profiles."
 				action={
 					<Link
 						href="/admin/users/new"
@@ -47,6 +72,13 @@ export function UsersList() {
 				}
 			/>
 			<AdminPanel>
+				{loadError ? (
+					<p className="mb-4 font-sans text-sm text-red-400" role="alert">
+						{loadError}. Run{" "}
+						<code className="text-luxinc-gold">supabase/profiles-schema.sql</code>{" "}
+						in the SQL Editor if the table is missing.
+					</p>
+				) : null}
 				<div className="mb-6 grid gap-4 md:grid-cols-3">
 					<div>
 						<label
@@ -135,7 +167,7 @@ export function UsersList() {
 	);
 }
 
-function UserRow({ user }: { user: AdminUserRecord }) {
+function UserRow({ user }: { user: ProfileListItem }) {
 	return (
 		<tr className="border-b border-luxinc-border/40 last:border-0">
 			<td className="py-4 pr-4 text-luxinc-text">{user.name}</td>
@@ -164,12 +196,14 @@ function UserRow({ user }: { user: AdminUserRecord }) {
 					>
 						Edit
 					</Link>
-					<Link
-						href="/member/upcoming"
-						className="text-luxinc-text-muted hover:text-luxinc-text"
-					>
-						View member
-					</Link>
+					{user.role === "member" ? (
+						<Link
+							href="/member/upcoming"
+							className="text-luxinc-text-muted hover:text-luxinc-text"
+						>
+							View member
+						</Link>
+					) : null}
 				</div>
 			</td>
 		</tr>

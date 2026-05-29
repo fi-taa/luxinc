@@ -1,11 +1,15 @@
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, "");
 
+export const DEFAULT_MEMBER_AVATAR_SRC = "/images/a1.png";
+
 /**
  * Supabase dashboard often copies signed URLs (`/object/sign/...?token=`).
  * Those expire and break next/image. Use permanent public URLs for CMS assets.
  */
-export function resolveStorageImageUrl(url: string | null | undefined): string {
-  if (!url?.trim()) return "";
+export function resolveStorageImageUrl(
+  url: string | null | undefined,
+): string | null {
+  if (!url?.trim()) return null;
   const trimmed = url.trim();
 
   if (
@@ -45,8 +49,26 @@ export function resolveStorageImageUrl(url: string | null | undefined): string {
   return trimmed;
 }
 
+export function resolveStorageImageUrlOrFallback(
+  url: string | null | undefined,
+  fallback: string = DEFAULT_MEMBER_AVATAR_SRC,
+): string {
+  return resolveStorageImageUrl(url) ?? fallback;
+}
+
+export function ensureImageSrc(
+  src: string | null | undefined,
+  fallback: string = DEFAULT_MEMBER_AVATAR_SRC,
+): string {
+  const trimmed = src?.trim();
+  if (!trimmed) return fallback;
+  return resolveStorageImageUrl(trimmed) ?? trimmed;
+}
+
 export function resolveStorageImageUrls(urls: string[]): string[] {
-  return urls.map((url) => resolveStorageImageUrl(url)).filter(Boolean);
+  return urls
+    .map((url) => resolveStorageImageUrl(url))
+    .filter((url): url is string => Boolean(url));
 }
 
 /** e.g. Supabase …/architects/a1.png → /images/a1.png */

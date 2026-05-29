@@ -5,6 +5,7 @@ import { FormEvent, useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/landing-content";
 import { cn } from "@/lib/utils";
+import { resolveMemberAuthRedirect } from "@/lib/auth/member-auth-redirect";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 import { useAppDispatch } from "@/store/hooks";
 import { loadProfile } from "@/store/slices/auth-slice";
@@ -12,6 +13,7 @@ import type { AuthModalView } from "./auth-modal-provider";
 
 interface AuthModalProps {
 	view: AuthModalView;
+	initialError?: string | null;
 	onClose: () => void;
 	onSwitch: (view: AuthModalView) => void;
 }
@@ -48,18 +50,51 @@ function AuthImagePanel() {
 
 interface AuthFormPanelProps {
 	view: AuthModalView;
+	initialError?: string | null;
 	onSwitch: (view: AuthModalView) => void;
 	onClose: () => void;
 }
 
-function AuthFormPanel({ view, onSwitch, onClose }: AuthFormPanelProps) {
+function AuthFormPanel({
+	view,
+	initialError,
+	onSwitch,
+	onClose,
+}: AuthFormPanelProps) {
 	const isSignIn = view === "sign-in";
 	const copy = isSignIn ? auth.signIn : auth.signUp;
 	const router = useRouter();
 	const dispatch = useAppDispatch();
 	const supabase = useMemo(() => getSupabaseBrowserClient(), []);
 	const [submitting, setSubmitting] = useState(false);
-	const [error, setError] = useState<string | null>(null);
+	const [error, setError] = useState<string | null>(initialError ?? null);
+
+	useEffect(() => {
+		setError(initialError ?? null);
+	}, [initialError, view]);
+
+	async function completeMemberSession(userId: string) {
+		const profile = await dispatch(loadProfile({ userId })).unwrap();
+		if (!profile) {
+			throw new Error(
+				"Member profile not found. Run supabase/profiles-schema.sql in Supabase.",
+			);
+		}
+		if (profile.status === "disabled") {
+			await supabase.auth.signOut();
+			throw new Error("This account has been disabled.");
+		}
+		if (profile.role !== "member") {
+			await supabase.auth.signOut();
+			throw new Error(
+				"This sign-in is for Luxinc members only. Use the admin login for operator access.",
+			);
+		}
+		onClose();
+		const params = new URLSearchParams(window.location.search);
+		router.push(resolveMemberAuthRedirect(params.get("next")));
+		router.refresh();
+	}
 
 	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -77,21 +112,24 @@ function AuthFormPanel({ view, onSwitch, onClose }: AuthFormPanelProps) {
 			}
 
 			if (isSignIn) {
-				const { data, error: signInError } =
-					await supabase.auth.signInWithPassword({
-						email,
-						password,
-					});
-				if (signInError) throw signInError;
-
-				const userId = data.user?.id ?? null;
-				if (userId) {
-					const profile = await dispatch(loadProfile({ userId })).unwrap();
-					onClose();
-					router.push(profile?.role === "admin" ? "/admin" : "/member");
-				} else {
-					onClose();
+				const signInResponse = await fetch("/api/auth/sign-in", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ email, password }),
+				});
+				const signInBody = (await signInResponse.json()) as {
+					userId?: string;
+					error?: string;
+				};
+				if (!signInResponse.ok) {
+					throw new Error(signInBody.error ?? "Sign in failed");
 				}
+
+				const userId = signInBody.userId ?? null;
+				if (!userId) {
+					throw new Error("Sign in failed. Try again.");
+				}
+				await completeMemberSession(userId);
 			} else {
 				const fullName = String(formData.get("fullName") ?? "").trim();
 				const confirmPassword = String(formData.get("confirmPassword") ?? "");
@@ -105,24 +143,46 @@ function AuthFormPanel({ view, onSwitch, onClose }: AuthFormPanelProps) {
 					return;
 				}
 
-				const { data, error: signUpError } = await supabase.auth.signUp({
-					email,
-					password,
-					options: {
-						data: {
-							full_name: fullName,
-						},
-					},
+				const signUpResponse = await fetch("/api/auth/sign-up", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ email, password, fullName }),
 				});
-				if (signUpError) throw signUpError;
-
-				// If email confirmations are enabled, session may be null.
-				const userId = data.user?.id ?? null;
-				if (userId) {
-					void dispatch(loadProfile({ userId }));
+				const signUpBody = (await signUpResponse.json()) as {
+					userId?: string;
+					error?: string;
+					message?: string;
+					existingAccount?: boolean;
+				};
+				if (!signUpResponse.ok) {
+					throw new Error(signUpBody.error ?? "Sign up failed");
 				}
-				onClose();
-				router.push("/member");
+
+				if (signUpBody.existingAccount) {
+					throw new Error(
+						signUpBody.message ??
+							"This email is already registered. Use Sign In instead.",
+					);
+				}
+
+				const signInResponse = await fetch("/api/auth/sign-in", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ email, password }),
+				});
+				const signInBody = (await signInResponse.json()) as {
+					userId?: string;
+					error?: string;
+				};
+				if (!signInResponse.ok) {
+					throw new Error(signInBody.error ?? "Account created but sign in failed");
+				}
+
+				const userId = signInBody.userId ?? signUpBody.userId ?? null;
+				if (!userId) {
+					throw new Error("Sign in failed after sign up. Try Sign In.");
+				}
+				await completeMemberSession(userId);
 			}
 		} catch (e) {
 			const message = e instanceof Error ? e.message : "Authentication failed";
@@ -213,7 +273,12 @@ function AuthFormPanel({ view, onSwitch, onClose }: AuthFormPanelProps) {
 	);
 }
 
-export function AuthModal({ view, onClose, onSwitch }: AuthModalProps) {
+export function AuthModal({
+	view,
+	initialError,
+	onClose,
+	onSwitch,
+}: AuthModalProps) {
 	const isSignIn = view === "sign-in";
 
 	useEffect(() => {
@@ -252,7 +317,12 @@ export function AuthModal({ view, onClose, onSwitch }: AuthModalProps) {
 							isSignIn ? "left-0" : "left-1/2",
 						)}
 					>
-						<AuthFormPanel view={view} onSwitch={onSwitch} onClose={onClose} />
+						<AuthFormPanel
+							view={view}
+							initialError={initialError}
+							onSwitch={onSwitch}
+							onClose={onClose}
+						/>
 					</div>
 					<div
 						className={cn(
@@ -271,7 +341,12 @@ export function AuthModal({ view, onClose, onSwitch }: AuthModalProps) {
 							isSignIn ? "top-0" : "top-1/2",
 						)}
 					>
-						<AuthFormPanel view={view} onSwitch={onSwitch} onClose={onClose} />
+						<AuthFormPanel
+							view={view}
+							initialError={initialError}
+							onSwitch={onSwitch}
+							onClose={onClose}
+						/>
 					</div>
 					<div
 						className={cn(

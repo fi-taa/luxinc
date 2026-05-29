@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { ReferralProgramme } from "@/lib/referral-content";
+import { ensureImageSrc } from "@/lib/supabase/storage-url";
 import { ReferralActions } from "./referral-actions";
 
 interface ReferralCardProps {
@@ -7,11 +8,13 @@ interface ReferralCardProps {
 }
 
 export function ReferralCard({ programme }: ReferralCardProps) {
+	const imageSrc = ensureImageSrc(programme.image, "/images/c3.png");
+
 	return (
 		<article className="overflow-hidden rounded-xl border border-luxinc-gold/35 bg-[#141414] sm:flex">
 			<figure className="flex min-h-[260px] w-full items-center justify-center bg-black px-5 py-8 sm:w-[44%] sm:min-h-[300px] sm:px-8">
 				<Image
-					src={programme.image}
+					src={imageSrc}
 					alt={programme.imageAlt}
 					width={360}
 					height={460}

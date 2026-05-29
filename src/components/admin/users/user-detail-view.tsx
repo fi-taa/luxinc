@@ -15,11 +15,12 @@ import { AdminRepeater } from "@/components/admin/forms/admin-repeater";
 import { AdminStickySaveBar } from "@/components/admin/forms/admin-sticky-save-bar";
 import { useAdminForm } from "@/components/admin/forms/use-admin-form";
 import type { AdminUserRecord } from "@/lib/admin/admin-users";
+import { updateProfile } from "@/lib/admin/profiles";
 import type { ItineraryStop, UpcomingItinerary } from "@/lib/member-content";
 import type { PastJourney } from "@/lib/past-journeys-content";
+import { cn } from "@/lib/utils";
 
 type EditableItinerary = UpcomingItinerary | PastJourney;
-import { cn } from "@/lib/utils";
 
 const tabs = [
 	{ id: "profile", label: "Profile" },
@@ -34,8 +35,39 @@ type UserTab = (typeof tabs)[number]["id"];
 
 export function UserDetailView({ user }: { user: AdminUserRecord }) {
 	const [activeTab, setActiveTab] = useState<UserTab>("profile");
-	const { data, setField, isDirty, isSaving, saveMessage, save, discard } =
-		useAdminForm(structuredClone(user));
+	const [saving, setSaving] = useState(false);
+	const [saveError, setSaveError] = useState<string | null>(null);
+	const {
+		data,
+		setField,
+		isDirty,
+		saveMessage,
+		discard,
+		commit,
+	} = useAdminForm(structuredClone(user));
+
+	async function handleSave() {
+		setSaving(true);
+		setSaveError(null);
+		try {
+			await updateProfile(user.id, {
+				full_name: data.name,
+				email: data.email,
+				phone: data.phone ?? null,
+				avatar_url: data.avatarSrc,
+				role: data.role,
+				status: data.status,
+				travel_dna_period: data.travelDnaPeriod,
+			});
+			commit("Profile saved to Supabase.");
+		} catch (error) {
+			setSaveError(
+				error instanceof Error ? error.message : "Failed to save profile",
+			);
+		} finally {
+			setSaving(false);
+		}
+	}
 
 	return (
 		<>
@@ -258,11 +290,16 @@ export function UserDetailView({ user }: { user: AdminUserRecord }) {
 					) : null}
 				</div>
 			</div>
+			{saveError ? (
+				<p className="font-sans text-sm text-red-400" role="alert">
+					{saveError}
+				</p>
+			) : null}
 			<AdminStickySaveBar
 				isDirty={isDirty}
-				isSaving={isSaving}
+				isSaving={saving}
 				saveMessage={saveMessage}
-				onSave={save}
+				onSave={handleSave}
 				onDiscard={discard}
 			/>
 		</>

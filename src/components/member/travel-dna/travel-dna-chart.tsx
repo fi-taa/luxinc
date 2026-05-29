@@ -1,14 +1,11 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { useId, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useId, useState } from "react";
 import { MemberPanel } from "@/components/member/member-panel";
-import {
-	travelDnaChartGrid,
-	travelDnaLocationBars,
-	travelDnaLocationLegend,
-	travelDnaPeriods,
-} from "@/lib/travel-dna-content";
+import { travelDnaChartGrid } from "@/lib/travel-dna-content";
+import type { DnaLocationBar, DnaLocationLegend } from "@/lib/travel-dna-content";
 
 function ColorRing({ color }: { color: string }) {
 	return (
@@ -20,11 +17,48 @@ function ColorRing({ color }: { color: string }) {
 	);
 }
 
-export function TravelDnaChart() {
+interface TravelDnaChartProps {
+	activePeriod: string;
+	periodOptions: string[];
+	locationBars: DnaLocationBar[];
+	locationLegend: DnaLocationLegend[];
+}
+
+export function TravelDnaChart({
+	activePeriod,
+	periodOptions,
+	locationBars,
+	locationLegend,
+}: TravelDnaChartProps) {
+	const router = useRouter();
 	const selectId = useId();
-	const [period, setPeriod] = useState<(typeof travelDnaPeriods)[number]>(
-		travelDnaPeriods[0],
-	);
+	const [period, setPeriod] = useState(activePeriod);
+	const [isSaving, setIsSaving] = useState(false);
+
+	useEffect(() => {
+		setPeriod(activePeriod);
+	}, [activePeriod]);
+
+	async function handlePeriodChange(nextPeriod: string) {
+		setPeriod(nextPeriod);
+		setIsSaving(true);
+		try {
+			const response = await fetch("/api/member/travel-dna/period", {
+				method: "PATCH",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ period: nextPeriod }),
+			});
+			if (!response.ok) {
+				const body = (await response.json()) as { error?: string };
+				throw new Error(body.error ?? "Failed to save period");
+			}
+			router.refresh();
+		} catch {
+			setPeriod(activePeriod);
+		} finally {
+			setIsSaving(false);
+		}
+	}
 
 	return (
 		<MemberPanel>
@@ -39,12 +73,11 @@ export function TravelDnaChart() {
 					<select
 						id={selectId}
 						value={period}
-						onChange={(e) =>
-							setPeriod(e.target.value as (typeof travelDnaPeriods)[number])
-						}
-						className="cursor-pointer appearance-none bg-transparent pr-6 font-sans text-sm text-luxinc-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
+						disabled={isSaving || periodOptions.length === 0}
+						onChange={(e) => void handlePeriodChange(e.target.value)}
+						className="cursor-pointer appearance-none bg-transparent pr-6 font-sans text-sm text-luxinc-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold disabled:opacity-60"
 					>
-						{travelDnaPeriods.map((option) => (
+						{periodOptions.map((option) => (
 							<option key={option} value={option} className="bg-luxinc-bg">
 								{option}
 							</option>
@@ -56,6 +89,13 @@ export function TravelDnaChart() {
 					/>
 				</div>
 			</div>
+
+			{locationBars.length === 0 ? (
+				<p className="mt-4 font-sans text-sm text-luxinc-text-muted">
+					No location stats for this period. Add past journeys under Past Journeys —
+					your chart updates automatically from trip destinations.
+				</p>
+			) : null}
 
 			<div className="mt-6 overflow-hidden rounded-lg border border-luxinc-border/40 bg-[#121212] p-4 md:p-6">
 				<div className="relative">
@@ -73,7 +113,7 @@ export function TravelDnaChart() {
 					</div>
 
 					<div className="relative space-y-3.5 py-0.5">
-						{travelDnaLocationBars.map((bar) => (
+						{locationBars.map((bar) => (
 							<div key={bar.id} className="relative h-4">
 								<div
 									className="absolute top-1/2 left-0 h-[5px] -translate-y-1/2 rounded-full"
@@ -104,7 +144,7 @@ export function TravelDnaChart() {
 			</div>
 
 			<ul className="mt-6 space-y-4 border-t border-luxinc-border/50 pt-6">
-				{travelDnaLocationLegend.map((item) => (
+				{locationLegend.map((item) => (
 					<li
 						key={item.id}
 						className="flex items-center justify-between gap-4 font-sans text-sm"

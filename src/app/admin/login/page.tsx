@@ -1,12 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
+import { AdminLoginForm } from "@/components/admin/admin-login-form";
 import { site } from "@/lib/landing-content";
 
 export default function AdminLoginPage() {
 	return (
 		<div className="flex min-h-screen flex-col items-center justify-center bg-[#080808] px-4 text-luxinc-text">
 			<div className="w-full max-w-sm rounded-sm border border-luxinc-border/50 bg-[#111111] p-6">
-				<Link href="/" className="inline-block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold">
+				<Link
+					href="/"
+					className="inline-block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
+				>
 					<Image
 						src="/images/logo.svg"
 						alt={site.name}
@@ -22,43 +27,11 @@ export default function AdminLoginPage() {
 					Sign in
 				</h1>
 				<p className="mt-2 font-sans text-sm text-luxinc-text-muted">
-					Placeholder login — authentication will be added later.
+					Sign in with an admin account from Supabase Auth.
 				</p>
-				<form className="mt-8 space-y-4">
-					<div>
-						<label
-							htmlFor="admin-email"
-							className="block font-sans text-sm font-medium text-luxinc-text"
-						>
-							Email
-						</label>
-						<input
-							id="admin-email"
-							type="email"
-							defaultValue="admin@luxinc.com"
-							className="mt-2 w-full border border-luxinc-border bg-luxinc-bg px-3 py-2.5 font-sans text-sm text-luxinc-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
-						/>
-					</div>
-					<div>
-						<label
-							htmlFor="admin-password"
-							className="block font-sans text-sm font-medium text-luxinc-text"
-						>
-							Password
-						</label>
-						<input
-							id="admin-password"
-							type="password"
-							className="mt-2 w-full border border-luxinc-border bg-luxinc-bg px-3 py-2.5 font-sans text-sm text-luxinc-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold"
-						/>
-					</div>
-					<Link
-						href="/admin/dashboard"
-						className="inline-flex h-9 w-full items-center justify-center rounded-sm bg-luxinc-gold font-sans text-sm font-semibold text-luxinc-bg transition-colors hover:bg-luxinc-gold-muted"
-					>
-						Continue to dashboard
-					</Link>
-				</form>
+				<Suspense fallback={null}>
+					<AdminLoginForm />
+				</Suspense>
 			</div>
 		</div>
 	);

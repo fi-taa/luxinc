@@ -1,13 +1,20 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { adminOperator } from "@/lib/admin/admin-nav";
+import { SignOutButton } from "@/components/auth/sign-out-button";
 import { site } from "@/lib/landing-content";
+import { useAppSelector } from "@/store/hooks";
+import { selectAuth } from "@/store/slices/auth-slice";
 
 interface AdminHeaderProps {
 	title?: string;
 }
 
 export function AdminHeader({ title }: AdminHeaderProps) {
+	const { profile } = useAppSelector(selectAuth);
+	const operatorName = profile?.full_name ?? "Admin";
+
 	return (
 		<header className="sticky top-0 z-30 border-b border-luxinc-border/50 bg-[#0c0c0c]">
 			<div className="flex h-12 items-center justify-between gap-3 px-4 lg:px-5">
@@ -43,14 +50,12 @@ export function AdminHeader({ title }: AdminHeaderProps) {
 				</div>
 				<div className="flex items-center gap-3 sm:gap-4">
 					<span className="hidden max-w-[140px] truncate font-sans text-xs text-luxinc-text-muted sm:inline md:max-w-none md:text-sm">
-						{adminOperator.name}
+						{operatorName}
 					</span>
-					<Link
-						href="/admin/login"
+					<SignOutButton
+						redirectTo="/admin/login"
 						className="font-sans text-xs text-luxinc-gold transition-colors hover:text-luxinc-gold-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold sm:text-sm"
-					>
-						Sign out
-					</Link>
+					/>
 				</div>
 			</div>
 		</header>

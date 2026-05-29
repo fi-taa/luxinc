@@ -3,23 +3,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	conciergeAssistant,
-	conciergeReplyDelayMs,
-	createConciergeTextMessage,
 	createUserFileMessage,
 	createUserTextMessage,
 	createUserVoiceMessage,
-	getDummyConciergeReply,
-	getReplyContextFromMessage,
-	initialConciergeChatMessages,
 	type ConciergeChatMessage,
 } from "@/lib/concierge-chat-content";
 import { ChatComposer } from "./chat-composer";
 import { ChatMessage } from "./chat-message";
-
-function replyDelayMs(): number {
-	const { min, max } = conciergeReplyDelayMs;
-	return min + Math.floor(Math.random() * (max - min + 1));
-}
 
 function collectBlobUrls(messages: ConciergeChatMessage[]): string[] {
 	return messages.flatMap((message) => {
@@ -34,16 +24,23 @@ function collectBlobUrls(messages: ConciergeChatMessage[]): string[] {
 	});
 }
 
-export function ConciergeChat() {
-	const [messages, setMessages] = useState<ConciergeChatMessage[]>(
-		initialConciergeChatMessages,
-	);
+interface ConciergeChatProps {
+	initialMessages: ConciergeChatMessage[];
+	loadError?: string | null;
+}
+
+export function ConciergeChat({ initialMessages, loadError }: ConciergeChatProps) {
+	const [messages, setMessages] = useState<ConciergeChatMessage[]>(initialMessages);
 	const [isReplying, setIsReplying] = useState(false);
+	const [sendError, setSendError] = useState<string | null>(null);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
-	const replyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const messagesRef = useRef(messages);
 
 	messagesRef.current = messages;
+
+	useEffect(() => {
+		setMessages(initialMessages);
+	}, [initialMessages]);
 
 	const scrollToBottom = useCallback(() => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -55,53 +52,67 @@ export function ConciergeChat() {
 
 	useEffect(() => {
 		return () => {
-			if (replyTimeoutRef.current) {
-				clearTimeout(replyTimeoutRef.current);
-			}
 			collectBlobUrls(messagesRef.current).forEach((url) => {
 				URL.revokeObjectURL(url);
 			});
 		};
 	}, []);
 
-	const queueDummyReply = useCallback((context: string) => {
+	const persistUserMessage = useCallback(async (message: ConciergeChatMessage) => {
+		setSendError(null);
 		setIsReplying(true);
 
-		replyTimeoutRef.current = setTimeout(() => {
-			const reply = getDummyConciergeReply(context);
-			setMessages((current) => [...current, createConciergeTextMessage(reply)]);
-			setIsReplying(false);
-			replyTimeoutRef.current = null;
-		}, replyDelayMs());
-	}, []);
+		const optimisticMessages = [...messagesRef.current, message];
+		setMessages(optimisticMessages);
 
-	const sendUserMessage = useCallback(
-		(message: ConciergeChatMessage) => {
-			setMessages((current) => [...current, message]);
-			queueDummyReply(getReplyContextFromMessage(message));
-		},
-		[queueDummyReply],
-	);
+		try {
+			const response = await fetch("/api/member/concierge/messages", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ message }),
+			});
+			const body = (await response.json()) as {
+				messages?: ConciergeChatMessage[];
+				error?: string;
+			};
+
+			if (!response.ok) {
+				throw new Error(body.error ?? "Failed to send message");
+			}
+
+			if (body.messages?.length) {
+				setMessages((current) => {
+					const withoutOptimistic = current.filter((item) => item.id !== message.id);
+					return [...withoutOptimistic, ...body.messages!];
+				});
+			}
+		} catch (e) {
+			setMessages(messagesRef.current.filter((item) => item.id !== message.id));
+			setSendError(e instanceof Error ? e.message : "Failed to send message");
+		} finally {
+			setIsReplying(false);
+		}
+	}, []);
 
 	const handleSendText = useCallback(
 		(text: string) => {
-			sendUserMessage(createUserTextMessage(text));
+			void persistUserMessage(createUserTextMessage(text));
 		},
-		[sendUserMessage],
+		[persistUserMessage],
 	);
 
 	const handleSendVoice = useCallback(
 		(audioUrl: string, durationSeconds: number) => {
-			sendUserMessage(createUserVoiceMessage(audioUrl, durationSeconds));
+			void persistUserMessage(createUserVoiceMessage(audioUrl, durationSeconds));
 		},
-		[sendUserMessage],
+		[persistUserMessage],
 	);
 
 	const handleSendFile = useCallback(
 		(file: File, fileUrl: string) => {
-			sendUserMessage(createUserFileMessage(file, fileUrl));
+			void persistUserMessage(createUserFileMessage(file, fileUrl));
 		},
-		[sendUserMessage],
+		[persistUserMessage],
 	);
 
 	return (
@@ -119,6 +130,17 @@ export function ConciergeChat() {
 			</header>
 
 			<div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+				{loadError ? (
+					<p className="px-4 py-6 font-sans text-sm text-red-400 md:px-6">{loadError}</p>
+				) : null}
+				{!loadError && messages.length === 0 ? (
+					<p className="px-4 py-2 font-sans text-sm text-luxinc-text-muted md:px-6">
+						No messages yet. Type below to start your concierge conversation.
+					</p>
+				) : null}
+				{sendError ? (
+					<p className="px-4 pt-4 font-sans text-sm text-red-400 md:px-6">{sendError}</p>
+				) : null}
 				<div
 					className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-y-contain px-4 py-6 md:px-6"
 					role="log"
@@ -150,7 +172,7 @@ export function ConciergeChat() {
 						onSendText={handleSendText}
 						onSendVoice={handleSendVoice}
 						onSendFile={handleSendFile}
-						disabled={isReplying}
+						disabled={isReplying || Boolean(loadError)}
 					/>
 				</div>
 			</div>

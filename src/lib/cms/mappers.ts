@@ -16,6 +16,13 @@ import {
   resolveStorageImageUrls,
 } from "@/lib/supabase/storage-url";
 
+function cmsImageUrl(
+  url: string | null | undefined,
+  fallback = "/images/a1.png",
+): string {
+  return resolveStorageImageUrl(url) ?? fallback;
+}
+
 export function mapHeroRow(row: {
   location: string;
   subheadline: string;
@@ -33,7 +40,7 @@ export function mapHeroRow(row: {
     ctaHref: row.cta_href,
     loginCta: row.login_cta_label,
     loginHref: row.login_href,
-    image: resolveStorageImageUrl(row.image_url),
+    image: cmsImageUrl(row.image_url),
     imageAlt: row.image_alt,
   };
 }
@@ -126,7 +133,7 @@ export function mapCrownCollectionRow(row: {
     id: row.id,
     title: row.title,
     description: row.description,
-    image: resolveStorageImageUrl(row.image_url),
+    image: cmsImageUrl(row.image_url),
     imageAlt: row.title,
     href: "#",
   };
@@ -158,7 +165,7 @@ export function mapExperienceCard(row: {
     id: row.id,
     title: row.title,
     description: row.description,
-    image: resolveStorageImageUrl(row.image_url),
+    image: cmsImageUrl(row.image_url),
     imageAlt: row.image_alt,
     href: row.href,
     featured: row.is_featured,
@@ -202,7 +209,7 @@ export function mapArchitectRow(row: {
     role: row.short_description ?? "",
     subTitle: row.sub_title ?? undefined,
     description: row.description || undefined,
-    image: resolveStorageImageUrl(row.image_url),
+    image: cmsImageUrl(row.image_url),
     imageAlt: row.title,
     slug: slugifyTitle(row.title),
   };
@@ -259,7 +266,7 @@ export function mapArchitectToContentDetail(
     category: "architects",
     date: dateLabel,
     title: row.title,
-    image: resolveStorageImageUrl(row.image_url),
+    image: cmsImageUrl(row.image_url),
     imageAlt: row.title,
     paragraphs: paragraphsFromArchitectDescription(
       row.short_description,
@@ -270,7 +277,7 @@ export function mapArchitectToContentDetail(
       category: "architects",
       title: r.title,
       subtitle: r.short_description ?? r.sub_title ?? "",
-      image: resolveStorageImageUrl(r.image_url),
+      image: cmsImageUrl(r.image_url),
       imageAlt: r.title,
     })),
   };
@@ -286,7 +293,7 @@ export function mapTeamRow(row: {
     id: row.id,
     name: row.full_name,
     role: row.description ?? "",
-    image: resolveStorageImageUrl(row.avatar_url),
+    image: cmsImageUrl(row.avatar_url),
     imageAlt: row.full_name,
     slug: "",
   };
@@ -334,7 +341,7 @@ export function mapPersonCard(row: {
     id: row.id,
     name: row.name,
     role: row.role,
-    image: resolveStorageImageUrl(row.image_url),
+    image: cmsImageUrl(row.image_url),
     imageAlt: row.image_alt,
     slug: row.slug,
     tall: row.is_tall,
@@ -496,7 +503,7 @@ export function mapJournalSettings(row: {
   return {
     title: row.title,
     subtitle: row.subtitle,
-    collageImage: resolveStorageImageUrl(row.collage_image_url),
+    collageImage: cmsImageUrl(row.collage_image_url, "/images/j.png"),
     collageAlt: row.collage_image_alt,
     cta: row.cta_label,
     ctaHref: row.cta_href,
@@ -520,7 +527,7 @@ export function mapJournalHighlightRow(row: JournalRow) {
     subTitle: row.sub_title,
     body: row.short_description,
     description: row.description ?? "",
-    image: resolveStorageImageUrl(row.image_url),
+    image: cmsImageUrl(row.image_url),
     imageAlt: row.title,
   };
 }
@@ -598,7 +605,7 @@ export function mapJournalToContentDetail(
     category: "journal",
     date: dateLabel,
     title: row.title,
-    image: resolveStorageImageUrl(row.image_url) || "/images/j.png",
+    image: cmsImageUrl(row.image_url, "/images/j.png"),
     imageAlt: row.title,
     paragraphs: paragraphsFromJournalDescription(
       row.short_description,
@@ -609,7 +616,7 @@ export function mapJournalToContentDetail(
       category: "journal",
       title: r.title,
       subtitle: r.short_description ?? r.sub_title ?? "",
-      image: resolveStorageImageUrl(r.image_url) || "/images/j.png",
+      image: cmsImageUrl(r.image_url, "/images/j.png"),
       imageAlt: r.title,
     })),
   };
@@ -646,7 +653,7 @@ export function mapContentArticle(
     category: row.category,
     date: row.date_label,
     title: row.title,
-    image: resolveStorageImageUrl(row.image_url),
+    image: cmsImageUrl(row.image_url),
     imageAlt: row.image_alt,
     paragraphs: paragraphsFromJson(row.paragraphs),
     tableOfContents:
@@ -656,7 +663,7 @@ export function mapContentArticle(
       category: r.related_category,
       title: r.title,
       subtitle: r.subtitle,
-      image: resolveStorageImageUrl(r.image_url),
+      image: cmsImageUrl(r.image_url),
       imageAlt: r.image_alt,
     })),
   };

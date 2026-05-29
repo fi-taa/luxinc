@@ -78,7 +78,7 @@ export function AdminImageField({
 						id={pathId}
 						value={imageSrc.startsWith("blob:") ? "" : imageSrc}
 						onChange={(e) => {
-							const value = resolveStorageImageUrl(e.target.value);
+							const value = resolveStorageImageUrl(e.target.value) ?? "";
 							setPreviewSrc(value);
 							onImageSrcChange(value);
 						}}

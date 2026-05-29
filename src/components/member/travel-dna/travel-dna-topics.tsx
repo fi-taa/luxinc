@@ -1,6 +1,8 @@
 import Image from "next/image";
+import Link from "next/link";
 import { MemberPanel } from "@/components/member/member-panel";
 import type { DnaTopic } from "@/lib/travel-dna-content";
+import { ensureImageSrc } from "@/lib/supabase/storage-url";
 
 interface TravelDnaTopicsProps {
 	title: string;
@@ -8,11 +10,13 @@ interface TravelDnaTopicsProps {
 }
 
 function TopicRow({ topic }: { topic: DnaTopic }) {
+	const imageSrc = ensureImageSrc(topic.image, "/images/sd2.png");
+
 	return (
 		<li className="flex items-center gap-3">
 			<div className="relative size-12 shrink-0 overflow-hidden rounded-md sm:size-14">
 				<Image
-					src={topic.image}
+					src={imageSrc}
 					alt={topic.imageAlt}
 					fill
 					className="object-cover"
@@ -25,7 +29,7 @@ function TopicRow({ topic }: { topic: DnaTopic }) {
 						{topic.name}
 					</p>
 					<span className="shrink-0 font-sans text-xs text-luxinc-text-muted">
-						{topic.percent}% Correct
+						{topic.percent}% of trips
 					</span>
 				</div>
 				<div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
@@ -45,11 +49,24 @@ export function TravelDnaTopics({ title, topics }: TravelDnaTopicsProps) {
 			<h2 className="font-diphylleia text-lg font-normal text-luxinc-gold md:text-xl">
 				{title}
 			</h2>
+			{topics.length === 0 ? (
+				<p className="mt-4 font-sans text-sm text-luxinc-text-muted">
+					No topic scores yet. Tag past journeys with travel topics when you add them.
+				</p>
+			) : null}
 			<ul className="mt-5 space-y-4">
 				{topics.map((topic) => (
 					<TopicRow key={topic.id} topic={topic} />
 				))}
 			</ul>
+			{topics.length === 0 ? (
+				<Link
+					href="/member/past-journeys"
+					className="mt-4 inline-block font-sans text-sm text-luxinc-gold underline-offset-4 hover:underline"
+				>
+					Add a past journey
+				</Link>
+			) : null}
 		</MemberPanel>
 	);
 }

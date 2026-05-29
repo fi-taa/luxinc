@@ -9,6 +9,8 @@ import {
   Edu_AU_VIC_WA_NT_Guides,
   Homemade_Apple
 } from "next/font/google";
+import { Suspense } from "react";
+import { AuthQueryHandler } from "@/components/auth/auth-query-handler";
 import { AuthModalProvider } from "@/components/auth/auth-modal-provider";
 import { AppProviders } from "./providers";
 import "./globals.css";
@@ -91,6 +93,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
       className={`${montserrat.variable} ${playfair.variable} ${dancingScript.variable} ${verietta.variable} ${encodeSansSemiExpanded.variable} ${diphylleia.variable} ${eduGuides.variable} ${homemadeApple.variable} h-full antialiased`}
     >
@@ -99,7 +102,12 @@ export default function RootLayout({
         className="min-h-full flex flex-col"
       >
         <AppProviders>
-          <AuthModalProvider>{children}</AuthModalProvider>
+          <AuthModalProvider>
+            <Suspense fallback={null}>
+              <AuthQueryHandler />
+            </Suspense>
+            {children}
+          </AuthModalProvider>
         </AppProviders>
       </body>
     </html>

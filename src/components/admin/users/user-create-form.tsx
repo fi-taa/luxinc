@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminPanel } from "@/components/admin/admin-panel";
@@ -26,12 +27,41 @@ const initialState = {
 
 export function UserCreateForm() {
 	const router = useRouter();
-	const { data, setField, isDirty, isSaving, saveMessage, save, discard } =
+	const { data, setField, isDirty, saveMessage, discard, commit } =
 		useAdminForm(initialState);
+	const [submitError, setSubmitError] = useState<string | null>(null);
+	const [creating, setCreating] = useState(false);
 
 	async function handleSave() {
-		await save();
-		router.push("/admin/users");
+		setSubmitError(null);
+		setCreating(true);
+		try {
+			const response = await fetch("/api/admin/users", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					email: data.email,
+					password: data.password,
+					fullName: data.name,
+					phone: data.phone,
+					role: data.role,
+					status: data.status,
+				}),
+			});
+			const body = (await response.json()) as { id?: string; error?: string };
+			if (!response.ok) {
+				throw new Error(body.error ?? "Failed to create user");
+			}
+			commit("User created.");
+			router.push(body.id ? `/admin/users/${body.id}` : "/admin/users");
+			router.refresh();
+		} catch (error) {
+			setSubmitError(
+				error instanceof Error ? error.message : "Failed to create user",
+			);
+		} finally {
+			setCreating(false);
+		}
 	}
 
 	return (
@@ -105,7 +135,7 @@ export function UserCreateForm() {
 						<AdminField
 							label="Temporary password"
 							htmlFor="new-user-password"
-							hint="Invite email will be added when authentication is connected."
+							hint="Creates a Supabase Auth user with this password."
 							className="md:col-span-2"
 						>
 							<AdminInput
@@ -124,9 +154,14 @@ export function UserCreateForm() {
 					</p>
 				</AdminPanel>
 			</div>
+			{submitError ? (
+				<p className="font-sans text-sm text-red-400" role="alert">
+					{submitError}
+				</p>
+			) : null}
 			<AdminStickySaveBar
 				isDirty={isDirty}
-				isSaving={isSaving}
+				isSaving={creating}
 				saveMessage={saveMessage}
 				onSave={handleSave}
 				onDiscard={discard}

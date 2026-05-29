@@ -112,8 +112,50 @@ export const adminUsers: AdminUserRecord[] = [
 	},
 ];
 
+const mockById = new Map(adminUsers.map((user) => [user.id, user]));
+
+export function getMemberExtensionDefaults(userId: string): Omit<
+	AdminUserRecord,
+	| "id"
+	| "name"
+	| "email"
+	| "phone"
+	| "role"
+	| "status"
+	| "joinedAt"
+	| "avatarSrc"
+> {
+	const mock = mockById.get(userId);
+	if (mock) {
+		const {
+			id: _id,
+			name: _name,
+			email: _email,
+			phone: _phone,
+			role: _role,
+			status: _status,
+			joinedAt: _joinedAt,
+			avatarSrc: _avatarSrc,
+			...extension
+		} = mock;
+		return extension;
+	}
+
+	return {
+		upcoming: [],
+		pastJourneys: [],
+		referralProgrammes: [],
+		travelDnaPeriod: travelDnaPeriods[0],
+		locationBars: travelDnaLocationBars,
+		locationLegend: travelDnaLocationLegend,
+		preferredDestinations,
+		weakestTopics,
+		strongestTopics,
+	};
+}
+
 export function getAdminUser(id: string): AdminUserRecord | undefined {
-	return adminUsers.find((user) => user.id === id);
+	return mockById.get(id);
 }
 
 export function getRecentSignUpCount(): number {

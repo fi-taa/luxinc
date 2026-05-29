@@ -17,12 +17,19 @@ export function FillImage({
   src,
   ...props
 }: FillImageProps) {
-  const resolved = resolveStorageImageUrl(src);
+  const resolved =
+    resolveStorageImageUrl(src) ??
+    getLocalPublicImageFallback(src) ??
+    "/images/a1.png";
   const fallback = getLocalPublicImageFallback(resolved);
   const [currentSrc, setCurrentSrc] = useState(resolved);
 
   useEffect(() => {
-    setCurrentSrc(resolveStorageImageUrl(src));
+    setCurrentSrc(
+      resolveStorageImageUrl(src) ??
+        getLocalPublicImageFallback(src) ??
+        "/images/a1.png",
+    );
   }, [src]);
 
   return (

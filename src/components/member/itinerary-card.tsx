@@ -2,17 +2,20 @@ import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { GoldButton } from "@/components/landing/gold-button";
 import type { UpcomingItinerary } from "@/lib/member-content";
+import { ensureImageSrc } from "@/lib/supabase/storage-url";
 
 interface ItineraryCardProps {
 	itinerary: UpcomingItinerary;
 }
 
 export function ItineraryCard({ itinerary }: ItineraryCardProps) {
+	const imageSrc = ensureImageSrc(itinerary.image, "/images/sd3.png");
+
 	return (
 		<article className="flex flex-col gap-6 border border-luxinc-border/60 bg-luxinc-panel/40 p-4 sm:flex-row sm:gap-8 sm:p-6">
 			<figure className="relative aspect-4/3 w-full shrink-0 overflow-hidden rounded-lg sm:aspect-auto sm:h-[220px] sm:w-[280px] md:h-[240px] md:w-[320px]">
 				<Image
-					src={itinerary.image}
+					src={imageSrc}
 					alt={itinerary.imageAlt}
 					fill
 					className="object-cover"

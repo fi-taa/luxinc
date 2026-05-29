@@ -1,17 +1,20 @@
 import Image from "next/image";
 import { GoldButton } from "@/components/landing/gold-button";
 import type { PastJourney } from "@/lib/past-journeys-content";
+import { ensureImageSrc } from "@/lib/supabase/storage-url";
 
 interface PastJourneyCardProps {
 	journey: PastJourney;
 }
 
 export function PastJourneyCard({ journey }: PastJourneyCardProps) {
+	const imageSrc = ensureImageSrc(journey.image, "/images/sd3.png");
+
 	return (
 		<article className="flex flex-col gap-6 rounded-lg border border-luxinc-border/60 bg-luxinc-panel/50 p-4 sm:flex-row sm:gap-8 sm:p-6">
 			<figure className="relative aspect-4/3 w-full shrink-0 overflow-hidden rounded-lg sm:aspect-auto sm:h-[220px] sm:w-[280px] md:h-[260px] md:w-[320px]">
 				<Image
-					src={journey.image}
+					src={imageSrc}
 					alt={journey.imageAlt}
 					fill
 					className="object-cover"

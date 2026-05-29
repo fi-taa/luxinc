@@ -16,19 +16,24 @@ interface AuthModalContextValue {
   openSignIn: () => void;
   openSignUp: () => void;
   close: () => void;
+  setInitialError: (message: string | null) => void;
 }
 
 const AuthModalContext = createContext<AuthModalContextValue | null>(null);
 
 export function AuthModalProvider({ children }: { children: ReactNode }) {
   const [view, setView] = useState<AuthModalView | null>(null);
+  const [initialError, setInitialError] = useState<string | null>(null);
 
-  const close = useCallback(() => setView(null), []);
+  const close = useCallback(() => {
+    setView(null);
+    setInitialError(null);
+  }, []);
   const openSignIn = useCallback(() => setView("sign-in"), []);
   const openSignUp = useCallback(() => setView("sign-up"), []);
 
   const value = useMemo(
-    () => ({ openSignIn, openSignUp, close }),
+    () => ({ openSignIn, openSignUp, close, setInitialError }),
     [openSignIn, openSignUp, close]
   );
 
@@ -38,8 +43,12 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
       {view ? (
         <AuthModal
           view={view}
+          initialError={initialError}
           onClose={close}
-          onSwitch={(next) => setView(next)}
+          onSwitch={(next) => {
+            setInitialError(null);
+            setView(next);
+          }}
         />
       ) : null}
     </AuthModalContext.Provider>
