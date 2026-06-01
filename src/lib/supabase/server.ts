@@ -2,6 +2,13 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 let serverClient: SupabaseClient | null = null;
 
+export function hasSupabasePublicEnv(): boolean {
+	return Boolean(
+		process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() &&
+			process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim(),
+	);
+}
+
 /** Server-side Supabase client (anon key, public RLS reads). */
 export function createSupabaseServerClient(): SupabaseClient {
   if (serverClient) return serverClient;

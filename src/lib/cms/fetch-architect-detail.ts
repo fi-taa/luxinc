@@ -1,4 +1,7 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import {
+	createSupabaseServerClient,
+	hasSupabasePublicEnv,
+} from "@/lib/supabase/server";
 import { toLandingImageUrl } from "@/lib/supabase/storage-url.server";
 import { getContentDetail } from "@/lib/content-detail";
 import type { ContentDetail } from "@/lib/content-detail";
@@ -23,6 +26,10 @@ function withLandingImages(detail: ContentDetail): ContentDetail {
 }
 
 export async function fetchArchitectIds(): Promise<string[]> {
+  if (!hasSupabasePublicEnv()) {
+    return [];
+  }
+
   const supabase = createSupabaseServerClient();
   const { data, error } = await supabase.from("architects").select("id");
 
