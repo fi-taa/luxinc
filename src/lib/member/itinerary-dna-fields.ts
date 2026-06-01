@@ -10,15 +10,7 @@ export interface PastItineraryDnaSource {
 	topicTags: string[];
 }
 
-function isMissingDnaColumnError(message: string): boolean {
-	return (
-		message.includes("reporting_period") ||
-		message.includes("destination_category") ||
-		message.includes("topic_tags")
-	);
-}
-
-function mapPastItineraryRow(row: {
+function mapPastJourneyRow(row: {
 	id: string;
 	destination: string;
 	travel_date_label: string;
@@ -38,62 +30,60 @@ function mapPastItineraryRow(row: {
 	};
 }
 
+export async function countMemberJourneysByStatus(
+	supabase: SupabaseClient,
+	profileId: string,
+	status: "booked" | "completed",
+): Promise<number> {
+	const { count, error } = await supabase
+		.from("member_journeys")
+		.select("id", { count: "exact", head: true })
+		.eq("profile_id", profileId)
+		.eq("journey_status", status);
+
+	if (error) {
+		throw new Error(error.message);
+	}
+
+	return count ?? 0;
+}
+
 export async function fetchPastItinerariesForDna(
 	supabase: SupabaseClient,
 	profileId: string,
 ): Promise<PastItineraryDnaSource[]> {
-	const extended = await supabase
-		.from("member_itineraries")
+	const { data, error } = await supabase
+		.from("member_journeys")
 		.select(
 			"id,destination,travel_date_label,reporting_period,destination_category,topic_tags",
 		)
 		.eq("profile_id", profileId)
-		.eq("kind", "past")
+		.eq("journey_status", "completed")
 		.order("sort_order", { ascending: true });
 
-	if (!extended.error) {
-		return (extended.data ?? []).map(mapPastItineraryRow);
+	if (error) {
+		throw new Error(error.message);
 	}
 
-	if (!isMissingDnaColumnError(extended.error.message)) {
-		throw new Error(extended.error.message);
-	}
-
-	const legacy = await supabase
-		.from("member_itineraries")
-		.select("id,destination,travel_date_label")
-		.eq("profile_id", profileId)
-		.eq("kind", "past")
-		.order("sort_order", { ascending: true });
-
-	if (legacy.error) {
-		throw new Error(legacy.error.message);
-	}
-
-	return (legacy.data ?? []).map(mapPastItineraryRow);
+	return (data ?? []).map(mapPastJourneyRow);
 }
 
-export interface ItineraryDnaInsert {
+export interface MemberJourneyInsert {
+	profile_id: string;
+	destination: string;
+	travel_date_label: string;
 	reporting_period: string;
 	destination_category: string | null;
 	topic_tags: string[];
+	image_url: string | null;
+	image_alt: string;
+	stops: { time: string; activity: string }[];
+	sort_order: number;
 }
 
-export async function insertItineraryWithDnaFields(
+export async function insertMemberJourney(
 	supabase: SupabaseClient,
-	baseRow: Record<string, unknown>,
-	dnaFields: ItineraryDnaInsert,
+	row: MemberJourneyInsert,
 ) {
-	const fullRow = { ...baseRow, ...dnaFields };
-	const full = await supabase.from("member_itineraries").insert(fullRow).select("id").single();
-
-	if (!full.error) {
-		return full;
-	}
-
-	if (!isMissingDnaColumnError(full.error.message)) {
-		return full;
-	}
-
-	return supabase.from("member_itineraries").insert(baseRow).select("id").single();
+	return supabase.from("member_journeys").insert(row).select("id").single();
 }

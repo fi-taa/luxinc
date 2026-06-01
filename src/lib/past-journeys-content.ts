@@ -3,6 +3,8 @@ export interface PastJourneyStop {
 	activity: string;
 }
 
+export type PastJourneyStatus = "booked" | "completed";
+
 export interface PastJourney {
 	id: string;
 	destination: string;
@@ -10,6 +12,7 @@ export interface PastJourney {
 	image: string;
 	imageAlt: string;
 	stops: PastJourneyStop[];
+	journeyStatus: PastJourneyStatus;
 }
 
 export const pastJourneys: PastJourney[] = [
@@ -19,6 +22,7 @@ export const pastJourneys: PastJourney[] = [
 		travelDate: "June 10, 2026",
 		image: "/images/sd3.png",
 		imageAlt: "Tropical beach in Tanzania with palm trees and turquoise water",
+		journeyStatus: "completed",
 		stops: [
 			{ time: "8:00 AM", activity: "Flight departure" },
 			{ time: "11:30 AM", activity: "Arrive in Paris" },

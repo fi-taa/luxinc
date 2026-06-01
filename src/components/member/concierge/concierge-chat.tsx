@@ -2,12 +2,17 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-	conciergeAssistant,
 	createUserFileMessage,
 	createUserTextMessage,
 	createUserVoiceMessage,
 	type ConciergeChatMessage,
 } from "@/lib/concierge-chat-content";
+import {
+	mapConciergeRowToMessage,
+	markConciergeMessagesRead,
+	mergeConciergeMessage,
+} from "@/lib/member/concierge-messages";
+import { subscribeToConciergeMessages } from "@/lib/member/concierge-realtime";
 import { ChatComposer } from "./chat-composer";
 import { ChatMessage } from "./chat-message";
 
@@ -25,13 +30,18 @@ function collectBlobUrls(messages: ConciergeChatMessage[]): string[] {
 }
 
 interface ConciergeChatProps {
+	profileId: string;
 	initialMessages: ConciergeChatMessage[];
 	loadError?: string | null;
 }
 
-export function ConciergeChat({ initialMessages, loadError }: ConciergeChatProps) {
+export function ConciergeChat({
+	profileId,
+	initialMessages,
+	loadError,
+}: ConciergeChatProps) {
 	const [messages, setMessages] = useState<ConciergeChatMessage[]>(initialMessages);
-	const [isReplying, setIsReplying] = useState(false);
+	const [isSending, setIsSending] = useState(false);
 	const [sendError, setSendError] = useState<string | null>(null);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const messagesRef = useRef(messages);
@@ -48,7 +58,7 @@ export function ConciergeChat({ initialMessages, loadError }: ConciergeChatProps
 
 	useEffect(() => {
 		scrollToBottom();
-	}, [messages, isReplying, scrollToBottom]);
+	}, [messages, scrollToBottom]);
 
 	useEffect(() => {
 		return () => {
@@ -58,9 +68,32 @@ export function ConciergeChat({ initialMessages, loadError }: ConciergeChatProps
 		};
 	}, []);
 
+	useEffect(() => {
+		if (!profileId || loadError) {
+			return;
+		}
+
+		void markConciergeMessagesRead().catch(() => undefined);
+	}, [profileId, loadError]);
+
+	useEffect(() => {
+		if (!profileId) {
+			return undefined;
+		}
+
+		return subscribeToConciergeMessages(profileId, (row) => {
+			const incoming = mapConciergeRowToMessage(row);
+			setMessages((current) => mergeConciergeMessage(current, incoming));
+
+			if (row.sender === "concierge") {
+				void markConciergeMessagesRead().catch(() => undefined);
+			}
+		});
+	}, [profileId]);
+
 	const persistUserMessage = useCallback(async (message: ConciergeChatMessage) => {
 		setSendError(null);
-		setIsReplying(true);
+		setIsSending(true);
 
 		const optimisticMessages = [...messagesRef.current, message];
 		setMessages(optimisticMessages);
@@ -72,7 +105,7 @@ export function ConciergeChat({ initialMessages, loadError }: ConciergeChatProps
 				body: JSON.stringify({ message }),
 			});
 			const body = (await response.json()) as {
-				messages?: ConciergeChatMessage[];
+				message?: ConciergeChatMessage;
 				error?: string;
 			};
 
@@ -80,17 +113,17 @@ export function ConciergeChat({ initialMessages, loadError }: ConciergeChatProps
 				throw new Error(body.error ?? "Failed to send message");
 			}
 
-			if (body.messages?.length) {
+			if (body.message) {
 				setMessages((current) => {
 					const withoutOptimistic = current.filter((item) => item.id !== message.id);
-					return [...withoutOptimistic, ...body.messages!];
+					return mergeConciergeMessage(withoutOptimistic, body.message!);
 				});
 			}
 		} catch (e) {
 			setMessages(messagesRef.current.filter((item) => item.id !== message.id));
 			setSendError(e instanceof Error ? e.message : "Failed to send message");
 		} finally {
-			setIsReplying(false);
+			setIsSending(false);
 		}
 	}, []);
 
@@ -127,6 +160,10 @@ export function ConciergeChat({ initialMessages, loadError }: ConciergeChatProps
 				>
 					24/7 Concierge Chat
 				</h1>
+				<p className="mt-1 font-sans text-xs text-luxinc-text-muted md:text-sm">
+					Messages are delivered to your concierge team. Replies appear here in
+					real time.
+				</p>
 			</header>
 
 			<div className="flex min-h-0 flex-1 flex-col overflow-hidden">
@@ -135,7 +172,7 @@ export function ConciergeChat({ initialMessages, loadError }: ConciergeChatProps
 				) : null}
 				{!loadError && messages.length === 0 ? (
 					<p className="px-4 py-2 font-sans text-sm text-luxinc-text-muted md:px-6">
-						No messages yet. Type below to start your concierge conversation.
+						No messages yet. Send a note below and an advisor will respond.
 					</p>
 				) : null}
 				{sendError ? (
@@ -150,21 +187,6 @@ export function ConciergeChat({ initialMessages, loadError }: ConciergeChatProps
 					{messages.map((message) => (
 						<ChatMessage key={message.id} message={message} />
 					))}
-					{isReplying ? (
-						<div className="flex gap-3">
-							<div
-								className="flex size-9 shrink-0 items-center justify-center rounded-full bg-luxinc-gold font-sans text-xs font-semibold text-luxinc-bg"
-								aria-hidden
-							>
-								{conciergeAssistant.initials}
-							</div>
-							<div className="rounded-2xl rounded-tl-sm bg-[#1A1A1A] px-4 py-3">
-								<p className="font-sans text-sm text-luxinc-text-muted">
-									{conciergeAssistant.name} is typing…
-								</p>
-							</div>
-						</div>
-					) : null}
 					<div ref={messagesEndRef} className="h-px shrink-0" aria-hidden />
 				</div>
 				<div className="shrink-0">
@@ -172,7 +194,7 @@ export function ConciergeChat({ initialMessages, loadError }: ConciergeChatProps
 						onSendText={handleSendText}
 						onSendVoice={handleSendVoice}
 						onSendFile={handleSendFile}
-						disabled={isReplying || Boolean(loadError)}
+						disabled={isSending || Boolean(loadError)}
 					/>
 				</div>
 			</div>

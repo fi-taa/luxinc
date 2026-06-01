@@ -22,8 +22,28 @@ export function TravelDnaDashboardPanel({
 		return null;
 	}
 
+	const hasDnaData = travelDna.locationBars.length > 0;
+	const hasBookedOnly =
+		!hasDnaData &&
+		travelDna.bookedJourneyCount > 0 &&
+		travelDna.completedJourneyCount === 0;
+
 	return (
 		<section aria-labelledby="travel-dna-heading" className="space-y-6">
+			{hasBookedOnly ? (
+				<p className="font-sans text-sm text-luxinc-text-muted">
+					You have {travelDna.bookedJourneyCount}{" "}
+					{travelDna.bookedJourneyCount === 1 ? "trip" : "trips"} in Past journeys marked
+					as Booked. Travel DNA is built from trips marked Completed after you travel.
+					Ask your concierge or admin to mark a trip completed when it is done.
+				</p>
+			) : null}
+			{!hasDnaData && !hasBookedOnly ? (
+				<p className="font-sans text-sm text-luxinc-text-muted">
+					No completed trips yet. Completed journeys with destination type and travel
+					topics show charts here.
+				</p>
+			) : null}
 			<h1 id="travel-dna-heading" className="sr-only">
 				Travel DNA Profile
 			</h1>

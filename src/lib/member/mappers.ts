@@ -10,37 +10,41 @@ import type {
 	DnaTopic,
 	PreferredDestination,
 } from "@/lib/travel-dna-content";
-import { TRAVEL_DNA_ALL_PERIODS } from "./travel-dna-taxonomy";
 import type {
 	ConciergeMessageRow,
-	MemberItineraryRow,
+	MemberJourneyRow,
 	MemberReferralRow,
-	MemberTravelDnaDestinationRow,
-	MemberTravelDnaLocationRow,
-	MemberTravelDnaSettingsRow,
-	MemberTravelDnaTopicRow,
+	UpcomingJourneyRow,
 } from "./db-types";
+import { parseJourneyStops } from "./journey-stops";
 
-export function mapItineraryRow(row: MemberItineraryRow): UpcomingItinerary {
-	const stops = (row.member_itinerary_stops ?? [])
-		.sort((a, b) => a.sort_order - b.sort_order)
-		.map((stop) => ({
-			time: stop.stop_time,
-			activity: stop.activity,
-		}));
-
+export function mapUpcomingJourneyRow(
+	row: UpcomingJourneyRow,
+	paymentStatus: UpcomingItinerary["paymentStatus"],
+): UpcomingItinerary {
 	return {
 		id: row.id,
 		destination: row.destination,
 		travelDate: row.travel_date_label,
 		image: ensureImageSrc(row.image_url, "/images/sd3.png"),
 		imageAlt: row.image_alt,
-		stops,
+		stops: parseJourneyStops(row.stops),
+		amountMinor: row.amount_minor,
+		currency: row.currency,
+		paymentStatus,
 	};
 }
 
-export function mapPastJourneyRow(row: MemberItineraryRow): PastJourney {
-	return mapItineraryRow(row);
+export function mapMemberJourneyRow(row: MemberJourneyRow): PastJourney {
+	return {
+		id: row.id,
+		destination: row.destination,
+		travelDate: row.travel_date_label,
+		image: ensureImageSrc(row.image_url, "/images/sd3.png"),
+		imageAlt: row.image_alt,
+		stops: parseJourneyStops(row.stops),
+		journeyStatus: row.journey_status ?? "booked",
+	};
 }
 
 export function mapReferralRow(row: MemberReferralRow): ReferralProgramme {
@@ -54,47 +58,6 @@ export function mapReferralRow(row: MemberReferralRow): ReferralProgramme {
 	};
 }
 
-export function mapLocationBar(row: MemberTravelDnaLocationRow): DnaLocationBar {
-	return {
-		id: row.external_key,
-		label: row.label,
-		percent: Number(row.percent),
-		color: row.color,
-	};
-}
-
-export function mapLocationLegend(row: MemberTravelDnaLocationRow): DnaLocationLegend {
-	return {
-		id: row.external_key,
-		label: row.label,
-		percent: Number(row.percent),
-		color: row.color,
-	};
-}
-
-export function mapPreferredDestination(
-	row: MemberTravelDnaDestinationRow,
-): PreferredDestination {
-	return {
-		id: row.external_key,
-		rank: row.rank,
-		name: row.name,
-		pointsLabel: row.points_label,
-		correctPercent: row.correct_percent ?? undefined,
-		trend: row.trend,
-	};
-}
-
-export function mapDnaTopic(row: MemberTravelDnaTopicRow): DnaTopic {
-	return {
-		id: row.external_key,
-		name: row.name,
-		percent: row.percent,
-		image: ensureImageSrc(row.image_url, "/images/sd2.png"),
-		imageAlt: row.image_alt,
-	};
-}
-
 export interface TravelDnaBundle {
 	activePeriod: string;
 	periodOptions: string[];
@@ -103,35 +66,8 @@ export interface TravelDnaBundle {
 	preferredDestinations: PreferredDestination[];
 	weakestTopics: DnaTopic[];
 	strongestTopics: DnaTopic[];
-}
-
-export function mapTravelDnaBundle(
-	settings: MemberTravelDnaSettingsRow | null,
-	locations: MemberTravelDnaLocationRow[],
-	destinations: MemberTravelDnaDestinationRow[],
-	topics: MemberTravelDnaTopicRow[],
-): TravelDnaBundle {
-	const sortedLocations = [...locations].sort((a, b) => a.sort_order - b.sort_order);
-
-	return {
-		activePeriod: settings?.active_period ?? TRAVEL_DNA_ALL_PERIODS,
-		periodOptions: settings?.period_options?.length
-			? settings.period_options
-			: [TRAVEL_DNA_ALL_PERIODS],
-		locationBars: sortedLocations.map(mapLocationBar),
-		locationLegend: sortedLocations.map(mapLocationLegend),
-		preferredDestinations: [...destinations]
-			.sort((a, b) => a.sort_order - b.sort_order)
-			.map(mapPreferredDestination),
-		weakestTopics: topics
-			.filter((topic) => topic.kind === "weakest")
-			.sort((a, b) => a.sort_order - b.sort_order)
-			.map(mapDnaTopic),
-		strongestTopics: topics
-			.filter((topic) => topic.kind === "strongest")
-			.sort((a, b) => a.sort_order - b.sort_order)
-			.map(mapDnaTopic),
-	};
+	bookedJourneyCount: number;
+	completedJourneyCount: number;
 }
 
 export function mapConciergeRow(row: ConciergeMessageRow): ConciergeChatMessage {

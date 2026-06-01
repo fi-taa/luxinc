@@ -1,15 +1,7 @@
 import { NextResponse } from "next/server";
-import {
-	createConciergeTextMessage,
-	getDummyConciergeReply,
-	getReplyContextFromMessage,
-	type ConciergeChatMessage,
-} from "@/lib/concierge-chat-content";
-import {
-	conciergeMessageToBody,
-	mapConciergeRow,
-} from "@/lib/member/mappers";
-import { createSupabaseAuthServerClient } from "@/lib/supabase/auth-server";
+import type { ConciergeChatMessage } from "@/lib/concierge-chat-content";
+import { conciergeMessageToBody, mapConciergeRow } from "@/lib/member/mappers";
+import { requireActiveMember } from "@/lib/member/require-member-auth";
 import type { ConciergeMessageRow } from "@/lib/member/db-types";
 
 interface PostBody {
@@ -17,13 +9,12 @@ interface PostBody {
 }
 
 export async function POST(request: Request) {
-	const supabase = await createSupabaseAuthServerClient();
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
-
-	if (!user) {
-		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	const auth = await requireActiveMember();
+	if (auth.error || !auth.userId) {
+		return NextResponse.json(
+			{ error: auth.error ?? "Unauthorized" },
+			{ status: auth.error ? auth.status : 401 },
+		);
 	}
 
 	const body = (await request.json()) as PostBody;
@@ -33,20 +24,10 @@ export async function POST(request: Request) {
 		return NextResponse.json({ error: "Invalid message payload." }, { status: 400 });
 	}
 
-	const { data: profile } = await supabase
-		.from("profiles")
-		.select("role,status")
-		.eq("id", user.id)
-		.maybeSingle();
-
-	if (!profile || profile.role !== "member" || profile.status !== "active") {
-		return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-	}
-
-	const { data: insertedUser, error: userError } = await supabase
+	const { data: insertedUser, error: userError } = await auth.supabase
 		.from("concierge_messages")
 		.insert({
-			profile_id: user.id,
+			profile_id: auth.userId,
 			sender: "user",
 			message_type: message.type,
 			body: conciergeMessageToBody(message),
@@ -62,32 +43,7 @@ export async function POST(request: Request) {
 		);
 	}
 
-	const replyText = getDummyConciergeReply(getReplyContextFromMessage(message));
-	const replyPayload = createConciergeTextMessage(replyText);
-
-	const { data: insertedReply, error: replyError } = await supabase
-		.from("concierge_messages")
-		.insert({
-			profile_id: user.id,
-			sender: "concierge",
-			message_type: "text",
-			body: conciergeMessageToBody(replyPayload),
-			is_read: false,
-		})
-		.select("*")
-		.single();
-
-	if (replyError || !insertedReply) {
-		return NextResponse.json(
-			{ error: replyError?.message ?? "Failed to save concierge reply." },
-			{ status: 400 },
-		);
-	}
-
 	return NextResponse.json({
-		messages: [
-			mapConciergeRow(insertedUser as ConciergeMessageRow),
-			mapConciergeRow(insertedReply as ConciergeMessageRow),
-		],
+		message: mapConciergeRow(insertedUser as ConciergeMessageRow),
 	});
 }

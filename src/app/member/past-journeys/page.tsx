@@ -1,13 +1,12 @@
 import { PastJourneysPanel } from "@/components/member/past-journeys/past-journeys-panel";
-import { fetchMemberItineraries } from "@/lib/member/member-data.server";
-import type { PastJourney } from "@/lib/past-journeys-content";
+import { fetchMemberPastJourneys } from "@/lib/member/member-data.server";
 
 export default async function PastJourneysPage() {
-	let journeys: PastJourney[] = [];
+	let journeys: Awaited<ReturnType<typeof fetchMemberPastJourneys>> = [];
 	let error: string | null = null;
 
 	try {
-		journeys = (await fetchMemberItineraries("past")) as PastJourney[];
+		journeys = await fetchMemberPastJourneys();
 	} catch (e) {
 		error = e instanceof Error ? e.message : "Failed to load past journeys.";
 	}

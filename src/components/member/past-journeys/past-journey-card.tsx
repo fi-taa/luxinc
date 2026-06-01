@@ -22,9 +22,20 @@ export function PastJourneyCard({ journey }: PastJourneyCardProps) {
 				/>
 			</figure>
 			<div className="flex min-w-0 flex-1 flex-col">
-				<h2 className="font-diphylleia text-2xl font-normal text-luxinc-gold md:text-[1.75rem]">
-					To - {journey.destination}
-				</h2>
+				<div className="flex flex-wrap items-center gap-3">
+					<h2 className="font-diphylleia text-2xl font-normal text-luxinc-gold md:text-[1.75rem]">
+						To — {journey.destination}
+					</h2>
+					<span
+						className={
+							journey.journeyStatus === "completed"
+								? "rounded border border-luxinc-gold/40 px-2 py-0.5 font-sans text-xs font-semibold text-luxinc-gold"
+								: "rounded border border-luxinc-border/60 px-2 py-0.5 font-sans text-xs font-semibold text-luxinc-text-muted"
+						}
+					>
+						{journey.journeyStatus === "completed" ? "Completed" : "Booked"}
+					</span>
+				</div>
 				<p className="mt-2 font-sans text-sm text-luxinc-text-muted">
 					{journey.travelDate}
 				</p>

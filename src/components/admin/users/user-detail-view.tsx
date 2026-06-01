@@ -192,9 +192,14 @@ export function UserDetailView({ user }: { user: AdminUserRecord }) {
 						<ItineraryTab
 							label={activeTab === "upcoming" ? "Upcoming itineraries" : "Past journeys"}
 							items={activeTab === "upcoming" ? data.upcoming : data.pastJourneys}
-							onChange={(items) =>
-								setField(activeTab === "upcoming" ? "upcoming" : "pastJourneys", items)
-							}
+							onChange={(items) => {
+								if (activeTab === "upcoming") {
+									setField("upcoming", items as UpcomingItinerary[]);
+								} else {
+									setField("pastJourneys", items as PastJourney[]);
+								}
+							}}
+							isPastTab={activeTab === "past"}
 							showRateCta={activeTab === "past"}
 						/>
 					) : null}
@@ -310,11 +315,13 @@ function ItineraryTab({
 	label,
 	items,
 	onChange,
+	isPastTab,
 	showRateCta,
 }: {
 	label: string;
 	items: EditableItinerary[];
 	onChange: (items: EditableItinerary[]) => void;
+	isPastTab: boolean;
 	showRateCta?: boolean;
 }) {
 	return (
@@ -323,14 +330,29 @@ function ItineraryTab({
 				label={label}
 				items={items}
 				onChange={onChange}
-				createItem={() => ({
-					id: `itinerary-${Date.now()}`,
-					destination: "",
-					travelDate: "",
-					image: "/images/sd3.png",
-					imageAlt: "",
-					stops: [{ time: "8:00 AM", activity: "" }],
-				})}
+				createItem={() =>
+					isPastTab
+						? {
+								id: `itinerary-${Date.now()}`,
+								destination: "",
+								travelDate: "",
+								image: "/images/sd3.png",
+								imageAlt: "",
+								journeyStatus: "booked",
+								stops: [{ time: "8:00 AM", activity: "" }],
+							}
+						: {
+								id: `itinerary-${Date.now()}`,
+								destination: "",
+								travelDate: "",
+								image: "/images/sd3.png",
+								imageAlt: "",
+								amountMinor: 0,
+								currency: "ETB",
+								paymentStatus: "unpaid",
+								stops: [{ time: "8:00 AM", activity: "" }],
+							}
+				}
 				getKey={(item) => item.id}
 				renderItem={(item, index, update) => (
 					<div className="space-y-4">

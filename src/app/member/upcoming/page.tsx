@@ -1,15 +1,14 @@
 import { UpcomingItinerariesPanel } from "@/components/member/upcoming-itineraries-panel";
-import { fetchMemberItineraries } from "@/lib/member/member-data.server";
-import type { UpcomingItinerary } from "@/lib/member-content";
+import { fetchPublishedUpcomingJourneys } from "@/lib/member/member-data.server";
 
 export default async function UpcomingPage() {
-	let itineraries: UpcomingItinerary[] = [];
+	let itineraries: Awaited<ReturnType<typeof fetchPublishedUpcomingJourneys>> = [];
 	let error: string | null = null;
 
 	try {
-		itineraries = (await fetchMemberItineraries("upcoming")) as UpcomingItinerary[];
+		itineraries = await fetchPublishedUpcomingJourneys();
 	} catch (e) {
-		error = e instanceof Error ? e.message : "Failed to load itineraries.";
+		error = e instanceof Error ? e.message : "Failed to load upcoming journeys.";
 	}
 
 	return <UpcomingItinerariesPanel itineraries={itineraries} error={error} />;

@@ -1,7 +1,28 @@
-export interface MemberItineraryRow {
+export interface JourneyStopJson {
+	time: string;
+	activity: string;
+}
+
+export interface UpcomingJourneyRow {
+	id: string;
+	destination: string;
+	travel_date_label: string;
+	image_url: string | null;
+	image_alt: string;
+	stops: JourneyStopJson[] | unknown;
+	amount_minor: number;
+	currency: string;
+	is_published: boolean;
+	sort_order: number;
+}
+
+export type MemberJourneyStatus = "booked" | "completed";
+
+export interface MemberJourneyRow {
 	id: string;
 	profile_id: string;
-	kind: "upcoming" | "past";
+	upcoming_journey_id: string | null;
+	journey_status: MemberJourneyStatus;
 	destination: string;
 	travel_date_label: string;
 	reporting_period: string | null;
@@ -9,56 +30,21 @@ export interface MemberItineraryRow {
 	topic_tags: string[] | null;
 	image_url: string | null;
 	image_alt: string;
+	stops: JourneyStopJson[] | unknown;
 	sort_order: number;
-	member_itinerary_stops?: MemberItineraryStopRow[];
 }
 
-export interface MemberItineraryStopRow {
-	id: string;
-	itinerary_id: string;
-	sort_order: number;
-	stop_time: string;
-	activity: string;
-}
-
-export interface MemberTravelDnaSettingsRow {
-	profile_id: string;
-	active_period: string;
-	period_options: string[];
-}
-
-export interface MemberTravelDnaLocationRow {
+export interface MemberPaymentRow {
 	id: string;
 	profile_id: string;
-	external_key: string;
-	label: string;
-	percent: number;
-	color: string;
-	sort_order: number;
-}
-
-export interface MemberTravelDnaDestinationRow {
-	id: string;
-	profile_id: string;
-	external_key: string;
-	rank: number;
-	name: string;
-	points_label: string;
-	correct_percent: number | null;
-	trend: "up" | "down";
-	sort_order: number;
-}
-
-export interface MemberTravelDnaTopicRow {
-	id: string;
-	profile_id: string;
-	external_key: string;
-	kind: "weakest" | "strongest";
-	name: string;
-	percent: number;
-	image_url: string | null;
-	image_alt: string;
-	sort_order: number;
+	upcoming_journey_id: string;
+	tx_ref: string;
+	chapa_ref_id: string | null;
+	amount_minor: number;
+	currency: string;
+	status: "pending" | "success" | "failed";
+	failure_reason: string | null;
+	raw_verify: Record<string, unknown> | null;
 }
 
 export interface MemberReferralRow {

@@ -6,6 +6,7 @@ import {
 	Dna,
 	Gift,
 	MessageCircle,
+	User,
 	type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -20,6 +21,7 @@ const iconBySection: Record<MemberNavItem["id"], LucideIcon> = {
 	concierge: MessageCircle,
 	referrals: Gift,
 	"past-journeys": Archive,
+	profile: User,
 };
 
 interface MemberSidebarProps {

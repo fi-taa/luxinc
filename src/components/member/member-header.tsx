@@ -66,24 +66,33 @@ export function MemberHeader({ activeHref = "/#destinations" }: MemberHeaderProp
 					))}
 				</nav>
 				<div className="flex items-center justify-end gap-3 md:gap-4">
-					<span className="hidden font-sans text-sm text-luxinc-text md:inline">
-						{displayName}
-					</span>
-					<div
+					<Link
+						href="/member/profile"
 						className={cn(
-							"relative size-10 shrink-0 overflow-hidden rounded-full md:size-11",
-							"ring-2 ring-luxinc-gold ring-offset-2 ring-offset-luxinc-bg",
+							"flex items-center gap-3 rounded-md transition-opacity hover:opacity-90",
+							"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold focus-visible:ring-offset-2 focus-visible:ring-offset-luxinc-bg",
 						)}
+						aria-label="Open my profile"
 					>
-						<Image
-							src={avatarSrc}
-							alt=""
-							fill
-							className="object-cover"
-							sizes="44px"
-							unoptimized={avatarSrc.startsWith("blob:")}
-						/>
-					</div>
+						<span className="hidden font-sans text-sm text-luxinc-text md:inline">
+							{displayName}
+						</span>
+						<div
+							className={cn(
+								"relative size-10 shrink-0 overflow-hidden rounded-full md:size-11",
+								"ring-2 ring-luxinc-gold ring-offset-2 ring-offset-luxinc-bg",
+							)}
+						>
+							<Image
+								src={avatarSrc}
+								alt=""
+								fill
+								className="object-cover"
+								sizes="44px"
+								unoptimized={avatarSrc.startsWith("blob:")}
+							/>
+						</div>
+					</Link>
 					<SignOutButton
 						redirectTo="/?auth=sign-in"
 						className="font-sans text-xs text-luxinc-text-muted transition-colors hover:text-luxinc-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luxinc-gold md:text-sm"

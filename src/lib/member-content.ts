@@ -3,7 +3,8 @@ export type MemberNavId =
 	| "travel-dna"
 	| "concierge"
 	| "referrals"
-	| "past-journeys";
+	| "past-journeys"
+	| "profile";
 
 export interface MemberNavItem {
 	id: MemberNavId;
@@ -16,6 +17,8 @@ export interface ItineraryStop {
 	activity: string;
 }
 
+export type UpcomingPaymentStatus = "unpaid" | "paid";
+
 export interface UpcomingItinerary {
 	id: string;
 	destination: string;
@@ -23,6 +26,9 @@ export interface UpcomingItinerary {
 	image: string;
 	imageAlt: string;
 	stops: ItineraryStop[];
+	amountMinor: number;
+	currency: string;
+	paymentStatus: UpcomingPaymentStatus;
 }
 
 export const memberUser = {
@@ -40,6 +46,7 @@ export const memberNavItems: MemberNavItem[] = [
 	},
 	{ id: "referrals", label: "Referral Programme", href: "/member/referrals" },
 	{ id: "past-journeys", label: "Past Journeys", href: "/member/past-journeys" },
+	{ id: "profile", label: "My Profile", href: "/member/profile" },
 ];
 
 export const upcomingItineraries: UpcomingItinerary[] = [
@@ -49,6 +56,9 @@ export const upcomingItineraries: UpcomingItinerary[] = [
 		travelDate: "June 10, 2026",
 		image: "/images/sd3.png",
 		imageAlt: "Tropical coastline in Tanzania",
+		amountMinor: 850000,
+		currency: "ETB",
+		paymentStatus: "unpaid",
 		stops: [
 			{ time: "8:00 AM", activity: "Flight departure" },
 			{ time: "11:30 AM", activity: "Arrive in Paris" },
@@ -62,6 +72,9 @@ export const upcomingItineraries: UpcomingItinerary[] = [
 		travelDate: "June 10, 2026",
 		image: "/images/sd5.png",
 		imageAlt: "Wildlife safari in Kenya",
+		amountMinor: 1250000,
+		currency: "ETB",
+		paymentStatus: "unpaid",
 		stops: [
 			{ time: "8:00 AM", activity: "Flight departure" },
 			{ time: "11:30 AM", activity: "Arrive in Paris" },

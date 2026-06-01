@@ -1,8 +1,8 @@
-import { ArrowRight } from "lucide-react";
 import Image from "next/image";
-import { GoldButton } from "@/components/landing/gold-button";
+import { formatJourneyPrice } from "@/lib/member/format-journey-price";
 import type { UpcomingItinerary } from "@/lib/member-content";
 import { ensureImageSrc } from "@/lib/supabase/storage-url";
+import { ItineraryCardPayButton } from "./itinerary-card-pay-button";
 
 interface ItineraryCardProps {
 	itinerary: UpcomingItinerary;
@@ -10,7 +10,7 @@ interface ItineraryCardProps {
 
 export function ItineraryCard({ itinerary }: ItineraryCardProps) {
 	const imageSrc = ensureImageSrc(itinerary.image, "/images/sd3.png");
-
+	const priceLabel = formatJourneyPrice(itinerary.amountMinor, itinerary.currency);
 	return (
 		<article className="flex flex-col gap-6 border border-luxinc-border/60 bg-luxinc-panel/40 p-4 sm:flex-row sm:gap-8 sm:p-6">
 			<figure className="relative aspect-4/3 w-full shrink-0 overflow-hidden rounded-lg sm:aspect-auto sm:h-[220px] sm:w-[280px] md:h-[240px] md:w-[320px]">
@@ -30,6 +30,10 @@ export function ItineraryCard({ itinerary }: ItineraryCardProps) {
 					<span className="text-luxinc-gold">Travel Date:</span>{" "}
 					<span className="text-luxinc-text">{itinerary.travelDate}</span>
 				</p>
+				<p className="mt-1 font-sans text-sm font-medium">
+					<span className="text-luxinc-gold">Full journey:</span>{" "}
+					<span className="text-luxinc-text">{priceLabel}</span>
+				</p>
 				<ul className="mt-5 space-y-2 font-sans text-sm leading-relaxed text-luxinc-text">
 					{itinerary.stops.map((stop) => (
 						<li key={`${stop.time}-${stop.activity}`} className="flex gap-2">
@@ -43,13 +47,7 @@ export function ItineraryCard({ itinerary }: ItineraryCardProps) {
 					))}
 				</ul>
 				<div className="mt-6 sm:mt-auto sm:pt-4">
-					<GoldButton
-						variant="solid"
-						className="inline-flex items-center gap-2 px-6"
-					>
-						Start My Journey
-						<ArrowRight className="size-4" aria-hidden />
-					</GoldButton>
+					<ItineraryCardPayButton itinerary={itinerary} />
 				</div>
 			</div>
 		</article>

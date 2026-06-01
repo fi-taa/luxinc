@@ -24,12 +24,11 @@ export async function PATCH(request: Request) {
 	}
 
 	try {
-		await recomputeMemberTravelDna(auth.supabase, auth.userId, period);
-	} catch (recomputeError) {
+		const bundle = await recomputeMemberTravelDna(auth.supabase, auth.userId, period);
+		return NextResponse.json({ activePeriod: bundle.activePeriod });
+	} catch (updateError) {
 		const message =
-			recomputeError instanceof Error ? recomputeError.message : "Failed to update period.";
+			updateError instanceof Error ? updateError.message : "Failed to update period.";
 		return NextResponse.json({ error: message }, { status: 400 });
 	}
-
-	return NextResponse.json({ activePeriod: period });
 }
