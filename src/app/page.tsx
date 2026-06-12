@@ -10,7 +10,9 @@ import { LandingContentProvider } from "@/components/landing/landing-content-pro
 import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
 import { TeamSection } from "@/components/landing/team-section";
+import { JsonLd } from "@/components/seo/json-ld";
 import { fetchLandingContent } from "@/lib/cms/fetch-landing";
+import { getOrganizationJsonLd } from "@/lib/seo/site";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +21,7 @@ export default async function Home() {
 
 	return (
 		<LandingContentProvider value={content}>
+		<JsonLd data={getOrganizationJsonLd()} />
 		<main className="bg-luxinc-bg text-luxinc-text">
 			<SiteHeader />
 			<HeroSection />

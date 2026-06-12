@@ -12,6 +12,7 @@ import {
 import { Suspense } from "react";
 import { AuthQueryHandler } from "@/components/auth/auth-query-handler";
 import { AuthModalProvider } from "@/components/auth/auth-modal-provider";
+import { getRootMetadata } from "@/lib/seo/site";
 import { AppProviders } from "./providers";
 import "./globals.css";
 
@@ -79,11 +80,7 @@ const homemadeApple = Homemade_Apple({
   weight: ["400"],
 });
 
-export const metadata: Metadata = {
-  title: "LUXINC. | Luxury Travel Architects",
-  description:
-    "Time is the ultimate luxury. Luxinc architects bespoke travel memories across East Africa and beyond.",
-};
+export const metadata: Metadata = getRootMetadata();
 
 export default function RootLayout({
   children,

@@ -6,6 +6,7 @@ import {
   fetchArchitectDetail,
   fetchArchitectIds,
 } from "@/lib/cms/fetch-architect-detail";
+import { createPageMetadata } from "@/lib/seo/site";
 
 /** UUIDs from DB are not known at build time; always resolve on request. */
 export const dynamic = "force-dynamic";
@@ -27,15 +28,21 @@ export async function generateMetadata({
   const detail = await fetchArchitectDetail(slug);
 
   if (!detail) {
-    return { title: "The Architects | LUXINC." };
+    return createPageMetadata({
+      title: "The Architects | LUXINC.",
+      path: `/architects/${slug}`,
+    });
   }
 
-  return {
+  const description =
+    detail.paragraphs[0]?.segments.map((s) => s.text).join("") ?? detail.date;
+
+  return createPageMetadata({
     title: `${detail.title} | LUXINC.`,
-    description:
-      detail.paragraphs[0]?.segments.map((s) => s.text).join("") ??
-      detail.date,
-  };
+    description,
+    path: `/architects/${slug}`,
+    image: detail.image,
+  });
 }
 
 export default async function ArchitectDetailPage({

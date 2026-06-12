@@ -7,6 +7,7 @@ import {
 	fetchJournalDetail,
 	fetchJournalIds,
 } from "@/lib/cms/fetch-journal-detail";
+import { createPageMetadata } from "@/lib/seo/site";
 
 export const dynamic = "force-dynamic";
 
@@ -35,13 +36,18 @@ export async function generateMetadata({
 		(await fetchContentDetail("journal", slug));
 
 	if (!detail) {
-		return { title: "Journal | LUXINC." };
+		return createPageMetadata({
+			title: "Journal | LUXINC.",
+			path: `/journal/${slug}`,
+		});
 	}
 
-	return {
+	return createPageMetadata({
 		title: `${detail.title} | LUXINC. Journal`,
 		description: detail.paragraphs[0]?.segments.map((s) => s.text).join("") ?? "",
-	};
+		path: `/journal/${slug}`,
+		image: detail.image,
+	});
 }
 
 export default async function JournalDetailPage({

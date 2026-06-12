@@ -1,4 +1,7 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import {
+	createSupabaseServerClient,
+	hasSupabasePublicEnv,
+} from "@/lib/supabase/server";
 import type { ContentCategory, ContentDetail } from "@/lib/content-detail";
 import { getContentDetail, getContentDetailSlugs } from "@/lib/cms/fallbacks";
 import { mapContentArticle } from "@/lib/cms/mappers";
@@ -52,6 +55,10 @@ export async function fetchContentDetail(
 export async function fetchContentSlugs(
   category: ContentCategory
 ): Promise<string[]> {
+  if (!hasSupabasePublicEnv()) {
+    return getContentDetailSlugs(category);
+  }
+
   const supabase = createSupabaseServerClient();
   const { data } = await supabase
     .from("content_articles")
