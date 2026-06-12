@@ -74,12 +74,17 @@ export function createPageMetadata(options: {
 }
 
 export function getRootMetadata(): Metadata {
+	const googleVerification = process.env.GOOGLE_SITE_VERIFICATION?.trim();
+
 	return {
 		metadataBase: new URL(getSiteUrl()),
 		...createPageMetadata({
 			title: siteConfig.title,
 			description: siteConfig.description,
 		}),
+		...(googleVerification
+			? { verification: { google: googleVerification } }
+			: {}),
 	};
 }
 
